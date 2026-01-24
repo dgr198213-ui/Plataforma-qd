@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SolveIt Iterator Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ecc8",
+              "secondary": "#ff6b00",
+              "background-light": "#f6f8f8",
+              "background-dark": "#10221f",
+              "surface-dark": "#19332f",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            animation: {
+                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom scrollbar hiding for clean mobile look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen relative flex flex-col font-display overflow-x-hidden pb-24 text-slate-900 dark:text-white selection:bg-primary selection:text-background-dark">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 bg-[#10221f]/80 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center justify-between p-4 pb-3">
+<div class="flex items-center gap-3">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">all_inclusive</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">SolveIt</h2>
+</div>
+<!-- Pragmatism Meter (Compact) -->
+<div class="flex flex-col items-end w-32">
+<div class="flex justify-between w-full items-center mb-1">
+<span class="text-[10px] font-semibold text-[#92c9c0] uppercase tracking-wider">Pragmatism</span>
+<span class="text-xs font-bold text-primary">88%</span>
+</div>
+<div class="w-full h-1.5 bg-[#234842] rounded-full overflow-hidden relative">
+<!-- Gradient from Theory (Orange) to Results (Teal) -->
+<div class="absolute left-0 top-0 h-full bg-gradient-to-r from-secondary to-primary transition-all duration-500 rounded-full" style="width: 88%;"></div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex flex-col gap-6 px-4 pt-6">
+<!-- Hero: Iteration Loop -->
+<section class="relative flex flex-col items-center">
+<div class="relative size-72 flex items-center justify-center">
+<!-- Background Glow -->
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+<!-- SVG Circle Chart -->
+<svg class="w-full h-full transform -rotate-90 drop-shadow-2xl" viewbox="0 0 100 100">
+<!-- Track -->
+<circle cx="50" cy="50" fill="none" r="42" stroke="#19332f" stroke-width="6"></circle>
+<!-- Segment 1: Definition (Completed - Darker Teal) -->
+<circle cx="50" cy="50" fill="none" r="42" stroke="#234842" stroke-dasharray="60 204" stroke-dashoffset="0" stroke-linecap="round" stroke-width="6"></circle>
+<!-- Segment 2: Implementation (Active - Bright Teal) -->
+<circle class="drop-shadow-[0_0_10px_rgba(19,236,200,0.4)] animate-pulse-slow" cx="50" cy="50" fill="none" r="42" stroke="#13ecc8" stroke-dasharray="60 204" stroke-dashoffset="-66" stroke-linecap="round" stroke-width="6"></circle>
+<!-- Segment 3: Test (Pending - Dark) -->
+<circle cx="50" cy="50" fill="none" r="42" stroke="#162e2a" stroke-dasharray="60 204" stroke-dashoffset="-132" stroke-linecap="round" stroke-width="6"></circle>
+<!-- Segment 4: Refine (Pending - Dark) -->
+<circle cx="50" cy="50" fill="none" r="42" stroke="#162e2a" stroke-dasharray="60 204" stroke-dashoffset="-198" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<!-- Center Content -->
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+<p class="text-[#92c9c0] text-xs font-bold uppercase tracking-widest mb-1">Cycle 14</p>
+<h1 class="text-5xl font-bold text-white tracking-tighter tabular-nums">45%</h1>
+<div class="mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-dark border border-white/5">
+<span class="material-symbols-outlined text-[#92c9c0] text-[14px]">schedule</span>
+<span class="text-[#92c9c0] text-xs font-medium">45m left</span>
+</div>
+</div>
+</div>
+<!-- Active Phase Indicator -->
+<div class="mt-2 flex flex-col items-center gap-2">
+<div class="flex items-center gap-2">
+<h3 class="text-xl font-bold text-white">Smallest Implementation</h3>
+</div>
+<p class="text-[#92c9c0] text-sm font-normal text-center max-w-[260px] leading-relaxed">
+                    Current Focus: Build MVP feature set to unblock testing phase.
+                </p>
+</div>
+</section>
+<!-- nbdev Sync Status -->
+<div class="w-full">
+<div class="flex items-center justify-between rounded-xl bg-surface-dark border border-white/5 p-3 px-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="flex size-8 items-center justify-center rounded-lg bg-[#234842]">
+<span class="material-symbols-outlined text-primary text-[18px]">code</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-sm font-bold">nbdev Sync</span>
+<span class="text-[#92c9c0] text-xs">Docs ↔ Code is healthy</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined filled text-[20px]">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Micro-Task Backlog -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-white text-lg font-bold leading-tight tracking-tight">Micro-Task Backlog</h3>
+<span class="bg-secondary/10 text-secondary text-xs font-bold px-2.5 py-1 rounded-md">Next 3</span>
+</div>
+<!-- Active Task Card (Orange Accent) -->
+<div class="group relative overflow-hidden rounded-xl bg-[#152a26] border-l-[4px] border-secondary shadow-lg">
+<div class="absolute top-0 right-0 p-3 opacity-100">
+<span class="flex size-2 rounded-full bg-secondary animate-pulse"></span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex flex-col gap-1 pr-6">
+<h4 class="text-white text-base font-bold leading-snug">Hardcode API response</h4>
+<p class="text-[#92c9c0] text-xs">frontend/api/client.ts</p>
+</div>
+<div class="flex flex-wrap gap-2 items-center mt-1">
+<!-- Tangible Impact Badge -->
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-secondary/20 border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-[14px]">bolt</span>
+<span class="text-secondary text-[10px] font-bold uppercase tracking-wide">Unblock Frontend</span>
+</div>
+</div>
+<div class="mt-2 pt-3 border-t border-white/5 flex justify-end">
+<button class="flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+<span>Start Task</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Pending Task 1 -->
+<div class="rounded-xl bg-surface-dark border border-white/5 p-4 flex flex-col gap-3 opacity-90">
+<div class="flex justify-between items-start">
+<h4 class="text-white text-base font-medium leading-snug">Write basic unit test</h4>
+<span class="material-symbols-outlined text-[#92c9c0]/40 text-[20px]">drag_indicator</span>
+</div>
+<div class="flex gap-2">
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#234842] border border-[#32675e]">
+<span class="material-symbols-outlined text-primary text-[14px]">shield</span>
+<span class="text-primary text-[10px] font-bold uppercase tracking-wide">Stable Build</span>
+</div>
+</div>
+</div>
+<!-- Pending Task 2 -->
+<div class="rounded-xl bg-surface-dark border border-white/5 p-4 flex flex-col gap-3 opacity-90">
+<div class="flex justify-between items-start">
+<h4 class="text-white text-base font-medium leading-snug">Draft user flow doc</h4>
+<span class="material-symbols-outlined text-[#92c9c0]/40 text-[20px]">drag_indicator</span>
+</div>
+<div class="flex gap-2">
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-indigo-500/10 border border-indigo-500/20">
+<span class="material-symbols-outlined text-indigo-400 text-[14px]">visibility</span>
+<span class="text-indigo-400 text-[10px] font-bold uppercase tracking-wide">Clarity</span>
+</div>
+</div>
+</div>
+</section>
+<div class="h-6"></div> <!-- Spacer -->
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-[#10221f]/90 backdrop-blur-xl border-t border-white/5 pb-safe pt-2 px-6 z-50">
+<div class="flex justify-between items-center h-16 pb-2">
+<button class="flex flex-col items-center gap-1 group w-16">
+<span class="material-symbols-outlined filled text-primary text-[26px] group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium text-white">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 group w-16">
+<span class="material-symbols-outlined text-[#92c9c0]/60 text-[26px] group-hover:text-primary transition-colors">folder_copy</span>
+<span class="text-[10px] font-medium text-[#92c9c0]/60 group-hover:text-white">Projects</span>
+</button>
+<button class="flex flex-col items-center gap-1 group w-16">
+<span class="material-symbols-outlined text-[#92c9c0]/60 text-[26px] group-hover:text-primary transition-colors">handyman</span>
+<span class="text-[10px] font-medium text-[#92c9c0]/60 group-hover:text-white">Tools</span>
+</button>
+<button class="flex flex-col items-center gap-1 group w-16">
+<span class="material-symbols-outlined text-[#92c9c0]/60 text-[26px] group-hover:text-primary transition-colors">settings</span>
+<span class="text-[10px] font-medium text-[#92c9c0]/60 group-hover:text-white">Settings</span>
+</button>
+</div>
+</nav>
+</body></html>

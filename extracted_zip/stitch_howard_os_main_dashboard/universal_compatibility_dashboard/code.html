@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Universal Compatibility Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ecc8",
+                        "primary-dim": "rgba(19, 236, 200, 0.1)",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#10221f",
+                        "surface-dark": "#162e2a",
+                        "card-dark": "#19332f",
+                        "accent-amber": "#fbbf24",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #10221f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #19332f;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #32675e;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white pb-24">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center p-4 justify-between">
+<div>
+<div class="text-[10px] uppercase tracking-widest text-primary font-bold mb-1">Howard OS</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight">Universal Compatibility</h2>
+</div>
+<div class="flex items-center justify-end">
+<button class="flex items-center justify-center rounded-full w-10 h-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">wifi_tethering</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Content Scroll Area -->
+<div class="flex flex-col w-full max-w-md mx-auto">
+<!-- Hero Metrics (Stats) -->
+<div class="flex flex-wrap gap-4 p-4">
+<!-- Metric 1 -->
+<div class="flex min-w-[150px] flex-1 flex-col gap-3 rounded-2xl p-5 border border-white/10 bg-gradient-to-br from-card-dark to-surface-dark relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">bolt</span>
+</div>
+<p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Efficiency for Impact</p>
+<div class="flex items-baseline gap-2">
+<p class="text-primary text-3xl font-bold leading-tight">92%</p>
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">High Output</span>
+</div>
+<div class="w-full bg-black/40 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="flex min-w-[150px] flex-1 flex-col gap-3 rounded-2xl p-5 border border-white/10 bg-gradient-to-br from-card-dark to-surface-dark relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">public</span>
+</div>
+<p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Democratization Score</p>
+<div class="flex items-baseline gap-2">
+<p class="text-white text-3xl font-bold leading-tight">A+</p>
+<span class="text-xs text-gray-400 font-normal">i5-8400</span>
+</div>
+<div class="w-full bg-black/40 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-white h-full rounded-full" style="width: 98%"></div>
+</div>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="px-4 pb-2">
+<div class="flex flex-col gap-2 p-5 rounded-2xl bg-surface-dark/50 border border-white/5">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">System Load History</p>
+<div class="flex items-baseline gap-2">
+<p class="text-white text-2xl font-bold">Optimal</p>
+<div class="flex items-center text-primary text-xs gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                Real-time
+                            </div>
+</div>
+</div>
+</div>
+<div class="h-[140px] w-full mt-4 -mx-2">
+<svg class="overflow-visible" fill="none" height="100%" preserveaspectratio="none" viewbox="0 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<!-- Gradient Definition -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#13ecc8" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#13ecc8" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area Fill -->
+<path d="M0 109C18.15 109 18.15 45 36.3 45C54.46 45 54.46 65 72.61 65C90.77 65 90.77 100 108.92 100C127.08 100 127.08 55 145.23 55C163.38 55 163.38 110 181.54 110C199.69 110 199.69 80 217.85 80C236 80 236 60 254.15 60C272.31 60 272.31 115 290.46 115C308.62 115 308.62 135 326.77 135C344.92 135 344.92 30 363.08 30C381.23 30 381.23 90 399.38 90C417.54 90 417.54 125 435.69 125C453.85 125 453.85 50 472 50V150H0V109Z" fill="url(#chartGradient)"></path>
+<!-- Line Stroke -->
+<path d="M0 109C18.15 109 18.15 45 36.3 45C54.46 45 54.46 65 72.61 65C90.77 65 90.77 100 108.92 100C127.08 100 127.08 55 145.23 55C163.38 55 163.38 110 181.54 110C199.69 110 199.69 80 217.85 80C236 80 236 60 254.15 60C272.31 60 272.31 115 290.46 115C308.62 115 308.62 135 326.77 135C344.92 135 344.92 30 363.08 30C381.23 30 381.23 90 399.38 90C417.54 90 417.54 125 435.69 125C453.85 125 453.85 50 472 50" stroke="#13ecc8" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Optimization Toggle -->
+<div class="px-4 py-4">
+<h3 class="text-white text-base font-bold mb-3 px-1">Hardware Optimization</h3>
+<div class="flex p-1 bg-surface-dark border border-white/10 rounded-xl relative">
+<!-- Toggle Background Slider (simulated by active class logic for simplicity here) -->
+<button class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-transparent text-gray-400 text-sm font-medium transition-all hover:text-white">
+<span class="material-symbols-outlined text-[18px]">battery_saver</span>
+                    Low Power (Laptop)
+                </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+                    Performance (GPU)
+                </button>
+</div>
+</div>
+<!-- Active Components Headline -->
+<div class="flex items-center justify-between px-5 pt-2 pb-2">
+<h3 class="text-white tracking-tight text-xl font-bold leading-tight">Active Components</h3>
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded">3 Online</span>
+</div>
+<!-- Component Cards List -->
+<div class="flex flex-col gap-4 p-4 pt-0">
+<!-- CPU Card -->
+<div class="flex items-center gap-4 rounded-xl bg-card-dark p-4 border border-white/5 shadow-sm">
+<div class="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" data-alt="Close up of a computer processor chip with metallic pins" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf9NpdggtC16sfdLjNSf3UAlhH3mDouSKPWwNziPtJT7nxoUaGDyAjaw_RQGrfsTb7QVSMeu4qraz6slCORJ88iI6vYdVMdpiyAWdcbtVPc9llTsgKeya0r5XdZ3yEb8A_m46qAMfd_R5Su1ZP7FRaBIck7sGeS4rA_J-J8sYXXxLNqxDTpa5ZosBgnUGuZ-Tc-aTMRWV_0376kHwNs4alL3WTXdICj4Q2-EmAZox5Te6yP02Jqj1e-2INCAa-CpxJvTgjkdmp5aI");'>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold leading-tight truncate">CPU: Intel Core i7</p>
+<span class="text-xs font-bold text-primary">3.2 GHz</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[16px]">thermostat</span>
+<p class="text-gray-300 text-sm font-normal leading-normal">Thermal Comfort: <span class="text-primary">Optimal (45°C)</span></p>
+</div>
+<!-- Mini Usage Bar -->
+<div class="flex items-center gap-2 mt-1">
+<div class="flex-1 h-1 bg-black/40 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[35%]"></div>
+</div>
+<span class="text-[10px] text-gray-500 font-mono">35%</span>
+</div>
+</div>
+</div>
+<!-- GPU Card -->
+<div class="flex items-center gap-4 rounded-xl bg-card-dark p-4 border border-white/5 shadow-sm">
+<div class="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" data-alt="Modern graphics card with cooling fans and LED lighting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgPq8DRtM28liyhlgHwfh7kLuwQw6dD_Ur75EUNiDTBE3-y9GZ2akGM9iYSvSD4IrD7cxl0ooyb_dL91OCDU5vZwEaedk7EccOM30UBDhH6HxbCM1CVpIUfBQ_V1LO9MMGjtEiTTq6nO5napGYs0qiS8oI0WMLRKyLfbedAyDR3GqDrsWPFzdZCcTsVlwMkdBLnNfKwx10XJ912pvewBM1fLuzpcz0aC0KsNSXMJh2ibNnLq744zDS1ZOur_WkogYCgclwtD7Z97g");'>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold leading-tight truncate">GPU: NVIDIA RTX 3070</p>
+<span class="text-xs font-bold text-accent-amber">Load: 88%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400 text-[16px]">memory</span>
+<p class="text-gray-300 text-sm font-normal leading-normal">VRAM: <span class="text-white">6.2GB Free</span></p>
+</div>
+<!-- Mini Usage Bar -->
+<div class="flex items-center gap-2 mt-1">
+<div class="flex-1 h-1 bg-black/40 rounded-full overflow-hidden">
+<div class="h-full bg-accent-amber w-[88%]"></div>
+</div>
+<span class="text-[10px] text-gray-500 font-mono">88%</span>
+</div>
+</div>
+</div>
+<!-- RAM Card -->
+<div class="flex items-center gap-4 rounded-xl bg-card-dark p-4 border border-white/5 shadow-sm opacity-80">
+<div class="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center border border-white/10 relative overflow-hidden" data-alt="Computer RAM stick module with heat sink" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDv2Df9QdJ5-tLVFL-RIw_umQVJo4b1Bh5D0xsPiC7ors_jlt1v34DmDr_U5YkyTeasB6V5O-V3wF4PA3U9T0Bdb-A4T5yICAaw9hWhSc9D0Qg_p2v6EKvBT2Fn9WXg9uf272nBvuS1b30xmd4ijtLPQmC3KEui6ggBZVcBxmLtP2lFK5KOt7XDIDEq2Gs4i3xJTeJ7rlBOG_AQC2U6I1iQPLAR7nW5QJhSlOOEpIsO23kKpO53xAKuX0ywARqtM7YqowyoSzeQQzs");'>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-bold leading-tight truncate">RAM: 32GB DDR4</p>
+<span class="text-xs font-bold text-primary">Stable</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400 text-[16px]">check_circle</span>
+<p class="text-gray-300 text-sm font-normal leading-normal">Availability: <span class="text-white">21GB Free</span></p>
+</div>
+<!-- Mini Usage Bar -->
+<div class="flex items-center gap-2 mt-1">
+<div class="flex-1 h-1 bg-black/40 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[30%]"></div>
+</div>
+<span class="text-[10px] text-gray-500 font-mono">30%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Cluster-Free Status Banner -->
+<div class="px-4 pb-6 mt-2">
+<div class="rounded-lg bg-[#0f2420] border border-[#1e453e] p-3 flex items-center justify-center gap-3">
+<div class="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+<p class="text-xs font-mono text-[#4ade80] tracking-wide text-center">
+                    CLUSTER-FREE STATUS: 100% LOCAL COMPUTE.<br/>NO H100s REQUIRED.
+                </p>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-background-dark/95 backdrop-blur-lg border-t border-white/5 z-50 pb-safe">
+<nav class="flex justify-around items-center h-16 max-w-md mx-auto px-2">
+<a class="flex flex-col items-center justify-center w-full h-full gap-1 group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-primary text-[24px]">home_app_logo</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full gap-1 group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors text-[24px]">folder_data</span>
+</div>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-gray-300">Projects</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full gap-1 group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors text-[24px]">construction</span>
+</div>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-gray-300">Tools</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full gap-1 group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors text-[24px]">settings</span>
+</div>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-gray-300">Settings</span>
+</a>
+</nav>
+</div>
+</body></html>
