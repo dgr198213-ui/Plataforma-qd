@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hype Detector Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ecc8",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#10221f",
+                        "card-dark": "#182c28",
+                        "hype-red": "#ff5252",
+                        "hype-mid": "#ffb74d",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .hype-gradient-high {
+            background: linear-gradient(90deg, #13ecc8 0%, #0f8f7a 100%);
+        }
+        .hype-gradient-low {
+            background: linear-gradient(90deg, #ff5252 0%, #b71c1c 100%);
+        }
+        .hype-gradient-mid {
+            background: linear-gradient(90deg, #ffb74d 0%, #f57c00 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col antialiased text-gray-900 dark:text-white pb-20">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-[#11221f]/90 backdrop-blur-md border-b border-[#32675e]/30 px-4 py-3">
+<div class="flex items-center justify-between">
+<h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">radar</span>
+                Hype Detector
+            </h1>
+<div class="flex items-center gap-2">
+<span class="text-xs font-medium text-[#92c9c0] uppercase tracking-wider">Filter Noise</span>
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#234842] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-colors duration-200">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm transform transition-transform duration-200"></div>
+<input checked="" class="hidden" type="checkbox"/>
+</label>
+</div>
+</div>
+</header>
+<!-- Main Feed -->
+<main class="flex-1 px-4 py-6 space-y-6 max-w-lg mx-auto w-full">
+<!-- Stats Overview -->
+<div class="grid grid-cols-2 gap-3 mb-6">
+<div class="bg-card-dark rounded-xl p-4 border border-[#32675e]/30 flex flex-col">
+<span class="text-[#92c9c0] text-xs font-medium mb-1">Avg Signal</span>
+<span class="text-2xl font-bold text-white">78%</span>
+<div class="w-full bg-[#234842] h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[78%]"></div>
+</div>
+</div>
+<div class="bg-card-dark rounded-xl p-4 border border-[#32675e]/30 flex flex-col">
+<span class="text-[#92c9c0] text-xs font-medium mb-1">Articles Filtered</span>
+<span class="text-2xl font-bold text-white">142</span>
+<span class="text-[10px] text-gray-400 mt-auto">Last 24 hours</span>
+</div>
+</div>
+<!-- Card 1: High Substance -->
+<article class="group bg-card-dark rounded-xl border border-[#32675e]/50 overflow-hidden hover:border-primary/50 transition-colors shadow-lg">
+<!-- Image & Badge Overlay -->
+<div class="relative h-40 bg-gray-800" data-alt="Abstract visualization of neural network structure in teal and black" style='background-image: linear-gradient(0deg, rgba(16, 34, 31, 0.9) 0%, rgba(16, 34, 31, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCknG74YYZ9s-OaPg_It4AKzvZm-isZuSUskFuxHVCaqBS4vC7iI7zvWx9XeZXCv0Faw2QYfoyFPKw93Z9MN28FH9x8evUn7GveXF0_8uKSsTpPcwCbwT3V2oQ541f63vTdyDubZy5KvVneRcpj3BSAd4lVzOs9nROG0si19d9cQixE9JSHIToXs2p5YZByn8DXNDd_Db8MSuCFVoW43xmL-L64pwSp6v1P9YTZ76v_iXU2BeFCVmh3FW1K_0s5BhFHvivBLAATJC0"); background-size: cover; background-position: center;'>
+<div class="absolute top-3 left-3">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-primary text-[#10221f] uppercase tracking-wider shadow-sm gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                        Evidence-Based
+                    </span>
+</div>
+<div class="absolute top-3 right-3 bg-[#11221f]/80 backdrop-blur-sm px-2 py-1 rounded-md border border-[#32675e]/30">
+<span class="text-[10px] text-[#92c9c0] font-medium uppercase tracking-wider">ArXiv • 2h ago</span>
+</div>
+</div>
+<div class="p-5 pt-2">
+<!-- Title -->
+<h3 class="text-xl font-bold text-white leading-tight mb-3">Scalable MatMul-free Language Modeling</h3>
+<!-- Meter -->
+<div class="mb-4">
+<div class="flex justify-between items-end mb-1">
+<span class="text-xs font-medium text-gray-400 uppercase tracking-widest">Substance Score</span>
+<span class="text-lg font-bold text-primary">92%</span>
+</div>
+<div class="h-2 w-full bg-[#234842] rounded-full overflow-hidden">
+<div class="h-full hype-gradient-high w-[92%] rounded-full"></div>
+</div>
+</div>
+<!-- Audit Snippet -->
+<div class="bg-[#11221f] rounded-lg p-3 border border-[#32675e]/30 mb-4">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5 shrink-0">check_circle</span>
+<p class="text-sm text-gray-300 leading-relaxed font-light">
+<strong class="text-white font-medium">First-Principles Audit:</strong> Solid architectural improvement. Demonstrates O(1) inference cost without quality degradation.
+                        </p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-between pt-2 border-t border-[#32675e]/30">
+<button class="flex items-center gap-2 text-primary hover:text-white transition-colors text-sm font-bold group/btn">
+<span>Read Full Audit</span>
+<span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="flex items-center gap-3">
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2: High Hype -->
+<article class="group bg-card-dark rounded-xl border border-hype-red/30 overflow-hidden hover:border-hype-red/60 transition-colors shadow-lg">
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-hype-red/20 text-hype-red uppercase tracking-wider border border-hype-red/30 gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                        Marketing Fluff
+                    </span>
+<span class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">TechCrunch • 4h ago</span>
+</div>
+<h3 class="text-xl font-bold text-white leading-tight mb-3">AGI Coming Next Week: New Startup Claims</h3>
+<!-- Meter -->
+<div class="mb-4">
+<div class="flex justify-between items-end mb-1">
+<span class="text-xs font-medium text-gray-400 uppercase tracking-widest">Substance Score</span>
+<span class="text-lg font-bold text-hype-red">15%</span>
+</div>
+<div class="h-2 w-full bg-[#234842] rounded-full overflow-hidden">
+<div class="h-full hype-gradient-low w-[15%] rounded-full"></div>
+</div>
+</div>
+<!-- Audit Snippet -->
+<div class="bg-[#11221f] rounded-lg p-3 border border-hype-red/20 mb-4 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-hype-red"></div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-hype-red text-sm mt-0.5 shrink-0">error</span>
+<p class="text-sm text-gray-300 leading-relaxed font-light">
+<strong class="text-white font-medium">Audit:</strong> Lacks empirical evidence. Relies heavily on buzzwords with no published benchmarks.
+                        </p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-between pt-2 border-t border-[#32675e]/30">
+<button class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium">
+<span>Dismiss</span>
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+<div class="flex items-center gap-3">
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 3: Mixed -->
+<article class="group bg-card-dark rounded-xl border border-[#32675e]/50 overflow-hidden hover:border-[#32675e] transition-colors shadow-lg">
+<div class="relative h-32 bg-gray-800" data-alt="Close up of computer chip wafer reflecting orange and blue lights" style='background-image: linear-gradient(0deg, rgba(16, 34, 31, 0.9) 0%, rgba(16, 34, 31, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDZkAEOWenh43SOlNVP4mMGvnhFHLLLyvhhmQbV8NMykMbXYVHFTYUo0X1jwyTvydVe1ck82_G14Zj0tJF8Wa3PvrNK1WzTDOSdpkOiOEBdT7lwbkXOUmDbQU_yLLRx_IGLQl5yKOxUl2cOQx0xBVuTrt915tW9klYgaG9xg4tp1aXjjZUaCiFPM6_kVfgVu535clfjc-quWbQfIcSwdRcoLuD-f5hnKKCsg0IpMJCG57EEre0aS3wAHNhj-H2uHir3Sjeeyniy4RA"); background-size: cover; background-position: center;'>
+<div class="absolute top-3 left-3">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-hype-mid text-[#10221f] uppercase tracking-wider shadow-sm gap-1">
+<span class="material-symbols-outlined text-[14px]">analytics</span>
+                        Speculative
+                    </span>
+</div>
+<div class="absolute top-3 right-3 bg-[#11221f]/80 backdrop-blur-sm px-2 py-1 rounded-md border border-[#32675e]/30">
+<span class="text-[10px] text-[#92c9c0] font-medium uppercase tracking-wider">Reuters • 6h ago</span>
+</div>
+</div>
+<div class="p-5 pt-2">
+<h3 class="text-xl font-bold text-white leading-tight mb-3">GPT-5 Supply Chain Rumors Analysis</h3>
+<!-- Meter -->
+<div class="mb-4">
+<div class="flex justify-between items-end mb-1">
+<span class="text-xs font-medium text-gray-400 uppercase tracking-widest">Substance Score</span>
+<span class="text-lg font-bold text-hype-mid">45%</span>
+</div>
+<div class="h-2 w-full bg-[#234842] rounded-full overflow-hidden">
+<div class="h-full hype-gradient-mid w-[45%] rounded-full"></div>
+</div>
+</div>
+<!-- Audit Snippet -->
+<div class="bg-[#11221f] rounded-lg p-3 border border-[#32675e]/30 mb-4">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-hype-mid text-sm mt-0.5 shrink-0">info</span>
+<p class="text-sm text-gray-300 leading-relaxed font-light">
+<strong class="text-white font-medium">Audit:</strong> Speculative but grounded in supply chain analysis of recent H100 GPU bulk purchases.
+                        </p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-between pt-2 border-t border-[#32675e]/30">
+<button class="flex items-center gap-2 text-primary hover:text-white transition-colors text-sm font-bold group/btn">
+<span>Read Analysis</span>
+<span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="flex items-center gap-3">
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#11221f]/95 backdrop-blur-md border-t border-[#32675e]/30 pb- safe-area-bottom">
+<div class="flex items-center justify-around h-16 max-w-lg mx-auto">
+<button class="flex flex-col items-center justify-center w-full h-full text-primary group">
+<span class="material-symbols-outlined text-2xl mb-1 group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium tracking-wide">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-primary transition-colors group">
+<span class="material-symbols-outlined text-2xl mb-1 group-hover:scale-110 transition-transform">rocket_launch</span>
+<span class="text-[10px] font-medium tracking-wide">Projects</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-primary transition-colors group">
+<span class="material-symbols-outlined text-2xl mb-1 group-hover:scale-110 transition-transform">build</span>
+<span class="text-[10px] font-medium tracking-wide">Tools</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-primary transition-colors group">
+<span class="material-symbols-outlined text-2xl mb-1 group-hover:scale-110 transition-transform">settings</span>
+<span class="text-[10px] font-medium tracking-wide">Settings</span>
+</button>
+</div>
+</nav>
+<!-- Safe area padding for bottom nav on mobile -->
+<div class="h-8 w-full bg-[#11221f]"></div>
+</body></html>
