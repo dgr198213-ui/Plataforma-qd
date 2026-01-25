@@ -108,6 +108,10 @@ export const useCodeStore = create(
 
       // ==================== ARCHIVOS ====================
       createFile: (name, language = 'javascript', path = null, content = '') => {
+        if (!name || typeof name !== 'string') {
+          throw new Error('El nombre del archivo es obligatorio');
+        }
+
         const newFile = {
           id: `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name,
@@ -133,6 +137,8 @@ export const useCodeStore = create(
       },
 
       updateFileContent: (fileId, content) => {
+        if (!fileId || typeof content !== 'string') return;
+
         set(state => ({
           files: (state.files || []).map(f =>
             f.id === fileId
@@ -143,6 +149,8 @@ export const useCodeStore = create(
       },
 
       saveFile: (fileId) => {
+        if (!fileId) return;
+
         set(state => ({
           files: (state.files || []).map(f =>
             f.id === fileId ? { ...f, saved: true, updatedAt: Date.now() } : f
