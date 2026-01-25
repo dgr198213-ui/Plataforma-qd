@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap } from 'lucide-react';
 import { MODULES } from '../../constants/modules';
+import SystemHealth from './SystemHealth';
 
 const ModuleCard = ({ icon, title, description, color, onClick }) => {
   const colors = {
@@ -126,6 +127,8 @@ const Dashboard = ({ onNavigate }) => {
             onClick={() => onNavigate(MODULES.PROJECTS)}
           />
         </div>
+
+        <SystemHealth />
 
         <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 mt-6">Análisis & Auditoría</h3>
         <div className="space-y-3">
