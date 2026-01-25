@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Shield, Github, Zap, MessageSquare, Cloud, Database, Eye, EyeOff } from 'lucide-react';
 import { useCredentialsStore } from '../../../store/credentialsStore';
+import AutoCredentialManager from './components/AutoCredentialManager';
 
 const ICONS = {
   Github, Zap, MessageSquare, Cloud, Database
@@ -59,6 +60,9 @@ const CredentialsPanel = ({ onBack }) => {
       </div>
 
       <div className="p-4 space-y-4">
+        {/* Nuevo Asistente de Configuración Rápida */}
+        <AutoCredentialManager />
+
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
           <div className="flex items-start gap-3">
             <Shield className="text-blue-500 mt-1 flex-shrink-0" size={20} />

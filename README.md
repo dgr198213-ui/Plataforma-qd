@@ -10,7 +10,8 @@
 - [Características Principales](#-características-principales)
 - [Módulos Disponibles](#-módulos-disponibles)
 - [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-- [Instalación Local](#-instalación-local)
+- [Instalación Rápida (Recomendado)](#-instalación-rápida-recomendado)
+- [Instalación Manual](#-instalación-manual)
 - [Atajos de Teclado](#-atajos-de-teclado)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Roadmap](#-roadmap)
@@ -46,37 +47,26 @@ Basado en **Monaco Editor**, ahora potenciado con herramientas personalizadas:
 
 ---
 
-## 🧩 Módulos Disponibles
+## 🚀 Instalación Rápida (Recomendado)
 
-### 🛠️ Desarrollo
-- **IDE Modular**: Editor multiactivo con gestión de pestañas, explorador de archivos y herramientas Git.
-- **No-Code Chat**: Interfaz de asistencia para generación de lógica sin código.
-- **Connectors**: Gestión de integraciones externas y APIs.
+Para una configuración automática que genera claves de cifrado y estructura de directorios:
 
-### 📊 Análisis y Seguridad
-- **Bias Firewall**: Detección y mitigación de sesgos en el desarrollo.
-- **Hype Detector**: Análisis de tendencias y relevancia tecnológica.
-- **SolveIt Iterator**: Herramienta de resolución de problemas paso a paso.
+```bash
+git clone https://github.com/dgr198213-ui/Plataforma-qd.git
+cd Plataforma-qd
+npm install
+npm run setup
+npm run dev
+```
 
-### 🔐 Gestión
-- **Projects Manager**: Organización de múltiples proyectos y espacios de trabajo.
-- **Credentials Panel**: Almacenamiento seguro de claves API con cifrado AES-256.
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-- **React 18.2** + **Vite 5.2**
-- **Tailwind CSS 3.4**
-- **Zustand 5.0** (con Immer y Persist)
-- **Monaco Editor 4.7**
-- **Lucide React** (Iconografía)
-- **Diff** (Motor de comparación de archivos)
-- **Crypto-JS 4.2** (Seguridad)
+O usa el comando de inicio rápido:
+```bash
+npm run dev:quick
+```
 
 ---
 
-## 🚀 Instalación Local
+## 🛠️ Instalación Manual
 
 ### 1. Clonar y Preparar
 ```bash
@@ -116,23 +106,21 @@ La aplicación estará disponible en: **http://localhost:5173**
 
 ```
 Plataforma-qd/
+├── scripts/
+│   ├── setup.cjs            # Script de configuración automática
+│   └── import-credentials.cjs # Script de importación
 ├── src/
 │   ├── components/
 │   │   ├── modules/
+│   │   │   ├── credentials/
+│   │   │   │   └── components/
+│   │   │   │       └── AutoCredentialManager.jsx # Nuevo asistente visual
 │   │   │   ├── development/
 │   │   │   │   ├── CodeEditor/
-│   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── CommandPalette.jsx
-│   │   │   │   │   │   ├── GlobalSearch.jsx
-│   │   │   │   │   │   ├── DiffViewer.jsx
-│   │   │   │   │   │   ├── Minimap.jsx
-│   │   │   │   │   │   └── ...
-│   │   │   │   │   └── index.jsx
+│   │   │   │   │   └── ...
 │   ├── store/
-│   │   ├── codeStore.js         # Store optimizado con Immer
+│   │   ├── codeStore.js
 │   │   └── credentialsStore.js
-│   ├── services/
-│   │   └── SecureStorage.js
 │   └── App.jsx
 └── README.md
 ```

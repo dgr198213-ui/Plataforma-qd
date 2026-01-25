@@ -10,7 +10,11 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "validate": "npm run lint && npm run test"
+    "validate": "npm run lint && npm run test",
+    "setup": "node scripts/setup.cjs",
+    "credentials": "node scripts/import-credentials.cjs",
+    "dev:quick": "npm run setup && npm run dev",
+    "backup-creds": "cp config/credentials.json config/backups/credentials-$(date +%Y%m%d).json 2>/dev/null || echo 'No hay credenciales para respaldar'"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
