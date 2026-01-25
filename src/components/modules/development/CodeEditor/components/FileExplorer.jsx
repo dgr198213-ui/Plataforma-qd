@@ -5,23 +5,23 @@ import {
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
-const FileExplorer = ({ onSelectFile }) => {
+const FileExplorer = () => {
   const {
-    projects,
+    projects = [],
     currentProjectId,
-    files,
+    files = [],
     createFile,
     createFolder,
-    setCurrentProject
+    setCurrentProject,
+    currentFileId,
+    setActiveFile
   } = useCodeStore();
 
   const [expandedFolders, setExpandedFolders] = useState(new Set(['root']));
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [viewMode, setViewMode] = useState('tree'); // 'tree' | 'list' | 'grid'
   const [showHidden, setShowHidden] = useState(false);
+  const [viewMode, setViewMode] = useState('tree'); // 'tree' | 'list'
 
-  // Estructura de proyecto basada en los archivos reales del store
   const projectStructure = useMemo(() => {
     const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
 
@@ -30,10 +30,8 @@ const FileExplorer = ({ onSelectFile }) => {
       name: file.name,
       type: 'file',
       language: file.language,
-      hidden: file.name.startsWith('.')
+      hidden: file.name?.startsWith('.')
     }));
-
-    // Mock folders based on names if they have slashes (not implemented here for simplicity)
 
     return {
       id: 'root',
@@ -46,9 +44,9 @@ const FileExplorer = ({ onSelectFile }) => {
   const getFileIcon = (item) => {
     if (item.type === 'folder') {
       return expandedFolders.has(item.id) ? (
-        <FolderOpen size={16} className="text-blue-400" />
+        <FolderOpen size={16} className="text-[#13ecc8]" />
       ) : (
-        <Folder size={16} className="text-blue-400" />
+        <Folder size={16} className="text-[#13ecc8]" />
       );
     }
 
@@ -71,11 +69,8 @@ const FileExplorer = ({ onSelectFile }) => {
   const toggleFolder = (folderId) => {
     setExpandedFolders(prev => {
       const next = new Set(prev);
-      if (next.has(folderId)) {
-        next.delete(folderId);
-      } else {
-        next.add(folderId);
-      }
+      if (next.has(folderId)) next.delete(folderId);
+      else next.add(folderId);
       return next;
     });
   };
@@ -85,71 +80,38 @@ const FileExplorer = ({ onSelectFile }) => {
       .filter(item => showHidden || !item.hidden)
       .filter(item =>
         !searchQuery ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.children && item.children.some(child =>
-          child.name.toLowerCase().includes(searchQuery.toLowerCase())
-        ))
+        item.name?.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .map(item => {
         const isExpanded = expandedFolders.has(item.id);
-        const isSelected = selectedItem === item.id;
+        const isSelected = currentFileId === item.id;
 
         return (
           <div key={item.id}>
-            {/* Elemento del árbol */}
             <div
               className={`
-                flex items-center gap-2 px-2 py-1.5 rounded transition-colors cursor-pointer
-                ${isSelected ? 'bg-[#13ecc8]/20 text-white' : 'hover:bg-white/5'}
+                flex items-center gap-2 px-2 py-1.5 rounded transition-colors cursor-pointer group
+                ${isSelected ? 'bg-[#13ecc8]/10 text-white' : 'text-gray-400 hover:bg-white/5'}
               `}
-              style={{ paddingLeft: `${depth * 20 + 12}px` }}
+              style={{ paddingLeft: `${depth * 12 + 8}px` }}
               onClick={() => {
-                if (item.type === 'folder') {
-                  toggleFolder(item.id);
-                } else {
-                  setSelectedItem(item.id);
-                  if (onSelectFile) {
-                    onSelectFile(item);
-                  } else {
-                    useCodeStore.getState().setActiveFile(item.id);
-                  }
-                }
+                if (item.type === 'folder') toggleFolder(item.id);
+                else setActiveFile(item.id);
               }}
             >
-              {/* Chevron para carpetas */}
               {item.type === 'folder' && (
                 <span className="w-4">
-                  {isExpanded ? (
-                    <ChevronDown size={14} className="text-gray-500" />
-                  ) : (
-                    <ChevronRight size={14} className="text-gray-500" />
-                  )}
+                  {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                 </span>
               )}
-
-              {/* Icono */}
               <span className="w-5 flex items-center justify-center">
                 {getFileIcon(item)}
               </span>
-
-              {/* Nombre */}
-              <span className={`
-                flex-1 text-sm truncate
-                ${item.hidden ? 'text-gray-500 italic' : ''}
-              `}>
+              <span className={`flex-1 text-[11px] truncate ${item.hidden ? 'opacity-50 italic' : ''}`}>
                 {item.name}
-                {item.hidden && <span className="ml-1 text-xs">(oculto)</span>}
               </span>
-
-              {/* Indicadores */}
-              {item.type === 'folder' && item.children && (
-                <span className="text-xs text-gray-500 px-1.5">
-                  {item.children.filter(c => !c.hidden || showHidden).length}
-                </span>
-              )}
             </div>
 
-            {/* Renderizar hijos si es carpeta expandida */}
             {item.type === 'folder' && isExpanded && item.children && (
               renderTree(item.children, depth + 1)
             )}
@@ -159,33 +121,21 @@ const FileExplorer = ({ onSelectFile }) => {
   };
 
   return (
-    <div className="w-64 bg-[#0d1117] border-r border-white/10 flex flex-col">
-      {/* Header */}
+    <div className="w-64 bg-[#0d1117] border-r border-white/10 flex flex-col h-full">
       <div className="p-3 border-b border-white/10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Folder size={16} className="text-blue-400" />
-            <h3 className="text-sm font-bold">EXPLORADOR</h3>
+            <Folder size={16} className="text-[#13ecc8]" />
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Explorador</h3>
           </div>
           <div className="flex items-center gap-1">
-            <button
-              onClick={() => setShowHidden(!showHidden)}
-              className="p-1 hover:bg-white/10 rounded transition-colors"
-              title={showHidden ? "Ocultar archivos" : "Mostrar ocultos"}
-            >
+            <button onClick={() => setShowHidden(!showHidden)} className="p-1 hover:bg-white/10 rounded">
               {showHidden ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
-            <button
-              onClick={() => {/* Refrescar */}}
-              className="p-1 hover:bg-white/10 rounded transition-colors"
-              title="Refrescar"
-            >
-              <RefreshCw size={14} />
-            </button>
+            <RefreshCw size={14} className="text-gray-500 cursor-pointer hover:text-white" />
           </div>
         </div>
 
-        {/* Barra de búsqueda */}
         <div className="relative mb-2">
           <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <input
@@ -193,79 +143,39 @@ const FileExplorer = ({ onSelectFile }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar archivos..."
-            className="w-full bg-[#192233] border border-white/10 rounded-lg px-6 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#13ecc8]/50"
+            className="w-full bg-[#192233] border border-white/5 rounded px-6 py-1 text-[10px] text-white placeholder-gray-600 focus:outline-none focus:border-[#13ecc8]/30"
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
-            >
-              ×
-            </button>
-          )}
         </div>
 
-        {/* Filtros y vista */}
         <div className="flex gap-1">
-          <button
-            onClick={() => setViewMode('tree')}
-            className={`flex-1 px-2 py-1 text-xs rounded ${viewMode === 'tree' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233]'}`}
-          >
-            Árbol
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`flex-1 px-2 py-1 text-xs rounded ${viewMode === 'list' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233]'}`}
-          >
-            Lista
-          </button>
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`flex-1 px-2 py-1 text-xs rounded ${viewMode === 'grid' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233]'}`}
-          >
-            Grid
-          </button>
+           <button onClick={() => setViewMode('tree')} className={`flex-1 py-1 text-[8px] font-bold rounded ${viewMode === 'tree' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233] text-gray-400'}`}>ÁRBOL</button>
+           <button onClick={() => setViewMode('list')} className={`flex-1 py-1 text-[8px] font-bold rounded ${viewMode === 'list' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233] text-gray-400'}`}>LISTA</button>
         </div>
       </div>
 
-      {/* Selector de proyecto */}
-      <div className="px-3 py-2 border-b border-white/10">
+      <div className="px-3 py-2 border-b border-white/5">
         <select
           value={currentProjectId}
           onChange={(e) => setCurrentProject(e.target.value)}
-          className="w-full bg-[#192233] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#13ecc8]/50"
+          className="w-full bg-transparent text-[10px] text-gray-400 outline-none cursor-pointer"
         >
           {projects.map(project => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
+            <option key={project.id} value={project.id} className="bg-[#0d1117]">{project.name}</option>
           ))}
         </select>
       </div>
 
-      {/* Árbol de archivos */}
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto py-2">
         {renderTree([projectStructure])}
       </div>
 
-      {/* Acciones rápidas */}
-      <div className="p-3 border-t border-white/10">
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={() => createFile('nuevo-archivo.js', 'javascript')}
-            className="flex items-center justify-center gap-1 px-3 py-2 bg-[#192233] rounded-lg text-xs hover:bg-[#192233]/80 transition-colors"
-          >
-            <FilePlus size={12} />
-            Nuevo Archivo
-          </button>
-          <button
-            onClick={() => createFolder('nueva-carpeta')}
-            className="flex items-center justify-center gap-1 px-3 py-2 bg-[#192233] rounded-lg text-xs hover:bg-[#192233]/80 transition-colors"
-          >
-            <FolderPlus size={12} />
-            Nueva Carpeta
-          </button>
-        </div>
+      <div className="p-3 border-t border-white/10 grid grid-cols-2 gap-2">
+        <button onClick={() => createFile('nuevo.js')} className="flex items-center justify-center gap-1 py-1.5 bg-[#192233] rounded text-[9px] font-bold text-gray-300 hover:text-white border border-white/5 transition-colors">
+          <FilePlus size={12} /> ARCHIVO
+        </button>
+        <button onClick={() => createFolder('carpeta')} className="flex items-center justify-center gap-1 py-1.5 bg-[#192233] rounded text-[9px] font-bold text-gray-300 hover:text-white border border-white/5 transition-colors">
+          <FolderPlus size={12} /> CARPETA
+        </button>
       </div>
     </div>
   );

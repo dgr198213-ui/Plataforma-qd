@@ -4,14 +4,9 @@ import {
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
-const Header = ({ onBack, isFullscreen, toggleFullscreen }) => {
-  const { currentFile, saveFile, currentProject } = useCodeStore();
-
-  const handleSave = () => {
-    if (currentFile) {
-      saveFile(currentFile.id, currentFile.content);
-    }
-  };
+const Header = ({ onBack, isFullscreen, toggleFullscreen, onRun, onSave, isExecuting }) => {
+  const { getCurrentFile, currentProject } = useCodeStore();
+  const currentFile = getCurrentFile();
 
   return (
     <div className="bg-[#10221f]/95 backdrop-blur-md border-b border-white/10 p-3 flex items-center justify-between z-10">
@@ -33,7 +28,7 @@ const Header = ({ onBack, isFullscreen, toggleFullscreen }) => {
         <button className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all" title="Settings">
           <Settings size={18} />
         </button>
-        <button onClick={handleSave} className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all" title="Save (Ctrl+S)">
+        <button onClick={onSave} className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all" title="Save (Ctrl+S)">
           <Save size={18} />
         </button>
         <button className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all" title="Share Project">
@@ -43,8 +38,12 @@ const Header = ({ onBack, isFullscreen, toggleFullscreen }) => {
         <button onClick={toggleFullscreen} className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all">
           {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
         </button>
-        <button className="bg-[#13ecc8] text-[#10221f] px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-[#0fc9a8] transition-all shadow-[0_0_15px_rgba(19,236,200,0.3)]">
-          <Play size={14} fill="currentColor" /> RUN
+        <button
+          onClick={onRun}
+          disabled={isExecuting}
+          className="bg-[#13ecc8] text-[#10221f] px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-[#0fc9a8] transition-all shadow-[0_0_15px_rgba(19,236,200,0.3)] disabled:opacity-50"
+        >
+          <Play size={14} fill="currentColor" className={isExecuting ? 'animate-pulse' : ''} /> {isExecuting ? '...' : 'RUN'}
         </button>
       </div>
     </div>

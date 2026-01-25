@@ -1,55 +1,29 @@
 import { useState } from 'react';
 import {
-  GitBranch, GitCommit, GitPullRequest, GitMerge,
-  RefreshCw, Plus, X, Copy,
-  Clock, User, Hash,
-  ChevronDown, ChevronRight, GitCompare,
+  GitBranch, GitCommit,
+  RefreshCw, Plus, X,
+  Clock, User,
+  ChevronDown, ChevronRight,
   Settings
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const GitPanel = () => {
-  const { unsavedFiles } = useCodeStore();
+  const {
+    getUnsavedFiles,
+    gitStatus,
+    gitChanges,
+    gitCommits,
+    gitBranches,
+    stageFile,
+    stageAll,
+    unstageAll,
+    commitChanges,
+    checkoutBranch,
+    createBranch
+  } = useCodeStore();
 
-  const [status, setStatus] = useState({
-    branch: 'main',
-    ahead: 0,
-    behind: 0,
-    changes: {
-      staged: 3,
-      unstaged: 5,
-      untracked: 2
-    }
-  });
-
-  const [commits, setCommits] = useState([
-    {
-      hash: 'a1b2c3d4',
-      author: 'howard-dev',
-      message: 'feat: agregar sistema de colaboración en tiempo real',
-      date: '2026-01-25 14:30:22',
-      filesChanged: 5
-    },
-    {
-      hash: 'e5f6g7h8',
-      author: 'howard-dev',
-      message: 'fix: corregir errores en el editor de código',
-      date: '2026-01-24 11:15:45',
-      filesChanged: 3
-    }
-  ]);
-
-  const [changes, setChanges] = useState([
-    { file: 'src/modules/development/CodeEditor.jsx', status: 'modified', staged: true },
-    { file: 'src/core/store/codeStore.js', status: 'modified', staged: true },
-    { file: 'package.json', status: 'modified', staged: false },
-    { file: '.env.local', status: 'untracked', staged: false }
-  ]);
-
-  const [branches, setBranches] = useState([
-    { name: 'main', current: true, lastCommit: 'Hace 2 horas' },
-    { name: 'develop', current: false, lastCommit: 'Hace 1 semana' }
-  ]);
+  const unsavedFiles = getUnsavedFiles();
 
   const [selectedView, setSelectedView] = useState('changes'); // 'changes' | 'history' | 'branches' | 'remote'
   const [expandedSections, setExpandedSections] = useState({
@@ -62,59 +36,10 @@ const GitPanel = () => {
   const [isPulling, setIsPulling] = useState(false);
   const [isPushing, setIsPushing] = useState(false);
 
-  // Simular fetch de estado de Git
-  const fetchGitStatus = async () => {
-    console.log('Fetching Git status...');
-  };
-
-  const handleStageFile = (fileName) => {
-    setChanges(prev =>
-      prev.map(change =>
-        change.file === fileName
-          ? { ...change, staged: !change.staged }
-          : change
-      )
-    );
-  };
-
-  const handleStageAll = () => {
-    setChanges(prev =>
-      prev.map(change => ({ ...change, staged: true }))
-    );
-  };
-
-  const handleUnstageAll = () => {
-    setChanges(prev =>
-      prev.map(change => ({ ...change, staged: false }))
-    );
-  };
-
   const handleCommit = () => {
     if (!commitMessage.trim()) return;
-
-    const stagedFiles = changes.filter(c => c.staged);
-    if (stagedFiles.length === 0) return;
-
-    const newCommit = {
-      hash: Math.random().toString(36).substring(2, 10),
-      author: 'howard-dev',
-      message: commitMessage,
-      date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      filesChanged: stagedFiles.length
-    };
-
-    setCommits([newCommit, ...commits]);
+    commitChanges(commitMessage);
     setCommitMessage('');
-    setChanges(prev => prev.filter(c => !c.staged));
-
-    setStatus(prev => ({
-      ...prev,
-      changes: {
-        ...prev.changes,
-        staged: 0,
-        unstaged: Math.max(0, prev.changes.unstaged - stagedFiles.length)
-      }
-    }));
   };
 
   const handlePull = async () => {
@@ -132,21 +57,8 @@ const GitPanel = () => {
   const handleCreateBranch = () => {
     const branchName = prompt('Nombre de la nueva rama:');
     if (branchName) {
-      setBranches(prev => [
-        { name: branchName, current: false, lastCommit: 'Nueva' },
-        ...prev
-      ]);
+      createBranch(branchName);
     }
-  };
-
-  const handleCheckoutBranch = (branchName) => {
-    setBranches(prev =>
-      prev.map(branch => ({
-        ...branch,
-        current: branch.name === branchName
-      }))
-    );
-    setStatus(prev => ({ ...prev, branch: branchName }));
   };
 
   const getStatusIcon = (status) => {
@@ -167,24 +79,20 @@ const GitPanel = () => {
   };
 
   return (
-    <div className="w-80 bg-[#0d1117] border-l border-white/10 flex flex-col">
+    <div className="w-80 bg-[#0d1117] flex flex-col h-full border-l border-white/10">
       {/* Header */}
       <div className="p-3 border-b border-white/10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <GitBranch size={16} className="text-[#13ecc8]" />
-            <h3 className="text-sm font-bold">CONTROL GIT</h3>
+            <h3 className="text-sm font-bold text-white">CONTROL GIT</h3>
           </div>
           <div className="flex items-center gap-1">
-            <button
-              onClick={fetchGitStatus}
-              className="p-1 hover:bg-white/10 rounded transition-colors"
-              title="Refrescar"
-            >
-              <RefreshCw size={14} />
+            <button className="p-1 hover:bg-white/10 rounded transition-colors" title="Refrescar">
+              <RefreshCw size={14} className="text-gray-400" />
             </button>
             <button className="p-1 hover:bg-white/10 rounded transition-colors">
-              <Settings size={14} />
+              <Settings size={14} className="text-gray-400" />
             </button>
           </div>
         </div>
@@ -192,31 +100,25 @@ const GitPanel = () => {
         {/* Branch info */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="px-2 py-1 bg-[#13ecc8]/20 text-[#13ecc8] rounded text-xs font-bold">
-              {status.branch}
+            <div className="px-2 py-1 bg-[#13ecc8]/20 text-[#13ecc8] rounded text-[10px] font-bold">
+              {gitStatus.branch}
             </div>
-            {status.ahead > 0 && (
-              <span className="text-xs text-green-500">↑{status.ahead}</span>
-            )}
-            {status.behind > 0 && (
-              <span className="text-xs text-red-500">↓{status.behind}</span>
-            )}
           </div>
 
           <div className="flex gap-1">
             <button
               onClick={handlePull}
               disabled={isPulling}
-              className="px-2 py-1 bg-[#192233] rounded text-xs hover:bg-[#192233]/80 disabled:opacity-50"
+              className="px-2 py-1 bg-[#192233] text-white rounded text-[10px] font-bold hover:bg-[#192233]/80 disabled:opacity-50"
             >
-              {isPulling ? '...' : 'Pull'}
+              {isPulling ? '...' : 'PULL'}
             </button>
             <button
               onClick={handlePush}
               disabled={isPushing}
-              className="px-2 py-1 bg-[#13ecc8] text-[#10221f] rounded text-xs font-bold hover:bg-[#0fc9a8] disabled:opacity-50"
+              className="px-2 py-1 bg-[#13ecc8] text-[#10221f] rounded text-[10px] font-bold hover:bg-[#0fc9a8] disabled:opacity-50"
             >
-              {isPushing ? '...' : 'Push'}
+              {isPushing ? '...' : 'PUSH'}
             </button>
           </div>
         </div>
@@ -228,14 +130,14 @@ const GitPanel = () => {
               key={tab}
               onClick={() => setSelectedView(tab)}
               className={`
-                flex-1 px-3 py-2 text-xs font-medium transition-colors
-                ${selectedView === tab
+                flex-1 px-1 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors
+                \${selectedView === tab
                   ? 'text-[#13ecc8] border-b-2 border-[#13ecc8]'
-                  : 'text-gray-400 hover:text-white'
+                  : 'text-gray-500 hover:text-white'
                 }
               `}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab}
             </button>
           ))}
         </div>
@@ -247,17 +149,17 @@ const GitPanel = () => {
           <div className="p-3">
             {/* Summary */}
             <div className="grid grid-cols-3 gap-2 mb-4">
-              <div className="bg-[#192233] rounded-lg p-3">
-                <div className="text-2xl font-bold text-green-500">{status.changes.staged}</div>
-                <div className="text-xs text-gray-400">Staged</div>
+              <div className="bg-[#192233] rounded-lg p-2 text-center">
+                <div className="text-lg font-bold text-green-500">{gitChanges.filter(c => c.staged).length}</div>
+                <div className="text-[8px] text-gray-400 uppercase">Staged</div>
               </div>
-              <div className="bg-[#192233] rounded-lg p-3">
-                <div className="text-2xl font-bold text-yellow-500">{status.changes.unstaged}</div>
-                <div className="text-xs text-gray-400">Unstaged</div>
+              <div className="bg-[#192233] rounded-lg p-2 text-center">
+                <div className="text-lg font-bold text-yellow-500">{gitChanges.filter(c => !c.staged).length + unsavedFiles.length}</div>
+                <div className="text-[8px] text-gray-400 uppercase">Changes</div>
               </div>
-              <div className="bg-[#192233] rounded-lg p-3">
-                <div className="text-2xl font-bold text-blue-500">{status.changes.untracked}</div>
-                <div className="text-xs text-gray-400">Untracked</div>
+              <div className="bg-[#192233] rounded-lg p-2 text-center">
+                <div className="text-lg font-bold text-blue-500">0</div>
+                <div className="text-[8px] text-gray-400 uppercase">Untracked</div>
               </div>
             </div>
 
@@ -267,25 +169,21 @@ const GitPanel = () => {
                 className="flex items-center gap-2 mb-2 cursor-pointer"
                 onClick={() => toggleSection('staged')}
               >
-                {expandedSections.staged ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                <span className="text-xs font-bold text-green-500">STAGED CHANGES</span>
-                <span className="text-xs text-gray-500">({changes.filter(c => c.staged).length})</span>
+                {expandedSections.staged ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                <span className="text-[10px] font-bold text-green-500">STAGED CHANGES</span>
+                <span className="text-[10px] text-gray-500">({gitChanges.filter(c => c.staged).length})</span>
               </div>
 
               {expandedSections.staged && (
-                <div className="space-y-1 ml-6">
-                  {changes
+                <div className="space-y-1 ml-4">
+                  {gitChanges
                     .filter(change => change.staged)
                     .map((change, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 hover:bg-white/5 rounded">
-                        <span>{getStatusIcon(change.status)}</span>
-                        <span className="flex-1 text-xs truncate">{change.file}</span>
-                        <button
-                          onClick={() => handleStageFile(change.file)}
-                          className="p-1 hover:bg-white/10 rounded"
-                          title="Unstage file"
-                        >
-                          <X size={12} />
+                      <div key={index} className="flex items-center gap-2 p-1.5 hover:bg-white/5 rounded">
+                        <span className="text-[10px]">{getStatusIcon(change.status)}</span>
+                        <span className="flex-1 text-[11px] text-gray-300 truncate">{change.file}</span>
+                        <button onClick={() => stageFile(change.file)} className="p-1 hover:bg-white/10 rounded">
+                          <X size={12} className="text-gray-500" />
                         </button>
                       </div>
                     ))}
@@ -299,57 +197,30 @@ const GitPanel = () => {
                 className="flex items-center gap-2 mb-2 cursor-pointer"
                 onClick={() => toggleSection('unstaged')}
               >
-                {expandedSections.unstaged ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                <span className="text-xs font-bold text-yellow-500">UNSTAGED CHANGES</span>
-                <span className="text-xs text-gray-500">({changes.filter(c => !c.staged && c.status !== 'untracked').length})</span>
+                {expandedSections.unstaged ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                <span className="text-[10px] font-bold text-yellow-500">MODIFIED FILES</span>
+                <span className="text-[10px] text-gray-500">({gitChanges.filter(c => !c.staged).length + unsavedFiles.length})</span>
               </div>
 
               {expandedSections.unstaged && (
-                <div className="space-y-1 ml-6">
-                  {changes
-                    .filter(change => !change.staged && change.status !== 'untracked')
+                <div className="space-y-1 ml-4">
+                  {/* Virtual changes from store */}
+                  {unsavedFiles.map(file => (
+                    <div key={file.id} className="flex items-center gap-2 p-1.5 hover:bg-white/5 rounded group">
+                      <span className="text-[10px]">🟡</span>
+                      <span className="flex-1 text-[11px] text-gray-300 truncate">{file.name}</span>
+                      <Plus size={12} className="text-gray-500 cursor-pointer opacity-0 group-hover:opacity-100" />
+                    </div>
+                  ))}
+                  {/* Hardcoded changes */}
+                  {gitChanges
+                    .filter(change => !change.staged)
                     .map((change, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 hover:bg-white/5 rounded">
-                        <span>{getStatusIcon(change.status)}</span>
-                        <span className="flex-1 text-xs truncate">{change.file}</span>
-                        <button
-                          onClick={() => handleStageFile(change.file)}
-                          className="p-1 hover:bg-white/10 rounded"
-                          title="Stage file"
-                        >
-                          <Plus size={12} />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
-
-            {/* Untracked Files */}
-            <div className="mb-4">
-              <div
-                className="flex items-center gap-2 mb-2 cursor-pointer"
-                onClick={() => toggleSection('untracked')}
-              >
-                {expandedSections.untracked ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                <span className="text-xs font-bold text-blue-500">UNTRACKED FILES</span>
-                <span className="text-xs text-gray-500">({changes.filter(c => c.status === 'untracked').length})</span>
-              </div>
-
-              {expandedSections.untracked && (
-                <div className="space-y-1 ml-6">
-                  {changes
-                    .filter(change => change.status === 'untracked')
-                    .map((change, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 hover:bg-white/5 rounded">
-                        <span>🆕</span>
-                        <span className="flex-1 text-xs truncate">{change.file}</span>
-                        <button
-                          onClick={() => handleStageFile(change.file)}
-                          className="p-1 hover:bg-white/10 rounded"
-                          title="Add to Git"
-                        >
-                          <Plus size={12} />
+                      <div key={index} className="flex items-center gap-2 p-1.5 hover:bg-white/5 rounded">
+                        <span className="text-[10px]">{getStatusIcon(change.status)}</span>
+                        <span className="flex-1 text-[11px] text-gray-300 truncate">{change.file}</span>
+                        <button onClick={() => stageFile(change.file)} className="p-1 hover:bg-white/10 rounded">
+                          <Plus size={12} className="text-gray-500" />
                         </button>
                       </div>
                     ))}
@@ -363,31 +234,21 @@ const GitPanel = () => {
                 value={commitMessage}
                 onChange={(e) => setCommitMessage(e.target.value)}
                 placeholder="Mensaje de commit..."
-                className="w-full bg-[#192233] border border-white/10 rounded-lg p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#13ecc8]/50 resize-none"
+                className="w-full bg-[#192233] border border-white/10 rounded-lg p-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#13ecc8]/50 resize-none"
                 rows={3}
               />
 
               <div className="flex gap-2 mt-2">
-                <button
-                  onClick={handleStageAll}
-                  className="flex-1 px-3 py-2 bg-[#192233] rounded-lg text-xs hover:bg-[#192233]/80"
-                >
-                  Stage All
-                </button>
-                <button
-                  onClick={handleUnstageAll}
-                  className="flex-1 px-3 py-2 bg-[#192233] rounded-lg text-xs hover:bg-[#192233]/80"
-                >
-                  Unstage All
-                </button>
+                <button onClick={stageAll} className="flex-1 px-3 py-1.5 bg-[#192233] text-white rounded text-[10px] font-bold hover:bg-[#192233]/80">STAGE ALL</button>
+                <button onClick={unstageAll} className="flex-1 px-3 py-1.5 bg-[#192233] text-white rounded text-[10px] font-bold hover:bg-[#192233]/80">UNSTAGE ALL</button>
               </div>
 
               <button
                 onClick={handleCommit}
-                disabled={changes.filter(c => c.staged).length === 0 || !commitMessage.trim()}
-                className="w-full mt-2 px-3 py-2 bg-[#13ecc8] text-[#10221f] rounded-lg text-sm font-bold hover:bg-[#0fc9a8] disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={gitChanges.filter(c => c.staged).length === 0 || !commitMessage.trim()}
+                className="w-full mt-2 px-3 py-2 bg-[#13ecc8] text-[#10221f] rounded-lg text-xs font-bold hover:bg-[#0fc9a8] disabled:opacity-50"
               >
-                Commit Changes ({changes.filter(c => c.staged).length})
+                COMMIT ({gitChanges.filter(c => c.staged).length})
               </button>
             </div>
           </div>
@@ -396,37 +257,19 @@ const GitPanel = () => {
         {selectedView === 'history' && (
           <div className="p-3">
             <div className="space-y-3">
-              {commits.map((commit, index) => (
-                <div key={index} className="bg-[#192233] rounded-lg p-3">
+              {gitCommits.map((commit, index) => (
+                <div key={index} className="bg-[#192233] rounded-lg p-3 border border-white/5">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <GitCommit size={12} className="text-gray-400" />
-                        <code className="text-xs text-gray-400 font-mono">{commit.hash.substring(0, 8)}</code>
+                        <GitCommit size={12} className="text-gray-500" />
+                        <code className="text-[10px] text-gray-500 font-mono">{commit.hash}</code>
                       </div>
-                      <h4 className="text-sm font-bold text-white mb-1">{commit.message}</h4>
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <User size={10} />
-                          {commit.author}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock size={10} />
-                          {commit.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Hash size={10} />
-                          {commit.filesChanged} files
-                        </span>
+                      <h4 className="text-xs font-bold text-white mb-1">{commit.message}</h4>
+                      <div className="flex items-center gap-3 text-[9px] text-gray-500">
+                        <span className="flex items-center gap-1"><User size={10} /> {commit.author}</span>
+                        <span className="flex items-center gap-1"><Clock size={10} /> {commit.date}</span>
                       </div>
-                    </div>
-                    <div className="flex gap-1">
-                      <button className="p-1 hover:bg-white/10 rounded">
-                        <Copy size={12} title="Copiar hash" />
-                      </button>
-                      <button className="p-1 hover:bg-white/10 rounded">
-                        <GitCompare size={12} title="Ver cambios" />
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -439,80 +282,34 @@ const GitPanel = () => {
           <div className="p-3">
             <button
               onClick={handleCreateBranch}
-              className="w-full mb-3 px-3 py-2 bg-[#192233] rounded-lg text-sm hover:bg-[#192233]/80 flex items-center justify-center gap-2"
+              className="w-full mb-3 px-3 py-2 bg-[#192233] text-white rounded-lg text-xs font-bold hover:bg-[#192233]/80 flex items-center justify-center gap-2 border border-white/5"
             >
-              <Plus size={14} />
-              Nueva Rama
+              <Plus size={14} /> NUEVA RAMA
             </button>
 
             <div className="space-y-2">
-              {branches.map((branch, index) => (
+              {gitBranches.map((branch, index) => (
                 <div
                   key={index}
                   className={`
-                    flex items-center justify-between p-3 rounded-lg cursor-pointer
-                    ${branch.current ? 'bg-[#13ecc8]/20 border border-[#13ecc8]/30' : 'bg-[#192233] hover:bg-[#192233]/80'}
+                    flex items-center justify-between p-3 rounded-lg cursor-pointer border
+                    \${branch.current ? 'bg-[#13ecc8]/10 border-[#13ecc8]/30' : 'bg-[#192233] border-white/5 hover:border-white/10'}
                   `}
-                  onClick={() => !branch.current && handleCheckoutBranch(branch.name)}
+                  onClick={() => !branch.current && checkoutBranch(branch.name)}
                 >
                   <div className="flex items-center gap-2">
-                    <GitBranch size={14} className={branch.current ? 'text-[#13ecc8]' : 'text-gray-400'} />
+                    <GitBranch size={14} className={branch.current ? 'text-[#13ecc8]' : 'text-gray-500'} />
                     <div>
-                      <div className="text-sm font-bold">{branch.name}</div>
-                      <div className="text-xs text-gray-400">Último commit: {branch.lastCommit}</div>
+                      <div className="text-xs font-bold text-white">{branch.name}</div>
+                      <div className="text-[9px] text-gray-500">Last: {branch.lastCommit}</div>
                     </div>
                   </div>
-
-                  {branch.current && (
-                    <div className="px-2 py-1 bg-[#13ecc8] text-[#10221f] text-xs font-bold rounded">
-                      ACTUAL
-                    </div>
-                  )}
+                  {branch.current && <div className="text-[8px] bg-[#13ecc8] text-[#10221f] px-1.5 py-0.5 rounded font-bold uppercase">Actual</div>}
                 </div>
               ))}
             </div>
           </div>
         )}
-
-        {selectedView === 'remote' && (
-          <div className="p-3">
-            <div className="bg-[#192233] rounded-lg p-4 mb-3">
-              <div className="flex items-center gap-2 mb-2">
-                <GitPullRequest size={16} className="text-[#13ecc8]" />
-                <h4 className="text-sm font-bold">Repositorio Remoto</h4>
-              </div>
-              <div className="text-xs text-gray-400">
-                <div className="mb-1">Origin: https://github.com/howard/os.git</div>
-                <div className="text-green-500">✓ Conectado</div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="bg-[#192233] rounded-lg p-3">
-                <h5 className="text-xs font-bold mb-2">PULL REQUEST</h5>
-                <div className="text-xs text-gray-400 mb-2">No hay pull requests abiertos</div>
-                <button className="w-full px-3 py-2 bg-[#13ecc8] text-[#10221f] rounded-lg text-xs font-bold hover:bg-[#0fc9a8]">
-                  Crear Pull Request
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="p-3 border-t border-white/10">
-        <div className="flex items-center justify-between text-xs text-gray-400">
-          <div className="flex items-center gap-1">
-            <GitMerge size={12} />
-            <span>Git {status.branch}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className={`px-2 py-0.5 rounded ${unsavedFiles.length > 0 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-green-500/20 text-green-500'}`}>
-              {unsavedFiles.length > 0 ? `${unsavedFiles.length} sin guardar` : 'Todo guardado'}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

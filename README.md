@@ -2,32 +2,55 @@
 
 Howard OS es una plataforma personal de desarrollo y auditoría diseñada para optimizar el flujo de trabajo de ingeniería de software con herramientas avanzadas impulsadas por IA.
 
-## Módulos Principales
+## 🏗️ Estructura del Sistema
 
-### 🛠️ Desarrollo & Herramientas
-- **Credenciales**: Gestión centralizada y segura de tokens de GitHub, OpenAI, Anthropic, Vercel y AWS.
-- **Editor de Código**: IDE integrado optimizado para FastHTML con previsualización en vivo y terminal.
-- **No-Code Chat**: Interfaz conversacional para la generación automática de código.
-- **Socratic Copilot**: Análisis arquitectónico profundo basado en el método socrático para mejorar la toma de decisiones técnicas.
-- **Conectores**: Integración fluida con GitHub, GitLab y servicios de despliegue.
-- **SemanticFS (Proyectos)**: Explorador de archivos inteligente con clustering contextual y búsqueda semántica de proyectos.
+```text
+src/
+ ├── components/
+ │    ├── modules/             # Módulos principales de la aplicación
+ │    │    ├── development/    # Herramientas de desarrollo
+ │    │    │    └── CodeEditor/ # IDE Howard OS (Modular)
+ │    │    │         ├── components/ # Sub-componentes del Editor
+ │    │    │         └── index.jsx   # Orquestador del Editor
+ │    │    ├── analysis/       # Auditoría y Análisis
+ │    │    ├── projects/       # Gestión de Proyectos
+ │    │    └── credentials/    # Seguridad y APIs
+ │    └── shared/              # Componentes comunes (Dashboard, Nav)
+ ├── core/                     # Infraestructura (Hooks, Error Boundary)
+ ├── store/                    # Estado Global (Zustand)
+ ├── services/                 # Lógica de Negocio y Almacenamiento
+ └── constants/                # Configuraciones y Constantes
+```
+
+## 🛠️ Módulos Principales
+
+### 💻 Editor de Código (IDE Howard OS)
+Un entorno de desarrollo modular y completo que incluye:
+- **FileExplorer**: Gestión jerárquica de archivos y proyectos.
+- **FileTabs**: Sistema dinámico de pestañas con indicador de cambios.
+- **MonacoEditor**: Editor profesional con resaltado de sintaxis y autocompletado.
+- **LivePreview**: Vista previa en tiempo real con soporte para múltiples dispositivos (Móvil, Tablet, Desktop).
+- **GitPanel**: Control de versiones integrado (Stage, Commit, Branching).
+- **Terminal & StatusBar**: Información de ejecución y estado del sistema en tiempo real.
+- **Command Palette**: Acceso rápido a comandos del sistema (Ctrl+P).
+
+### 🔑 Credenciales & Seguridad
+- Gestión centralizada y segura de tokens (GitHub, OpenAI, Anthropic, Vercel, AWS).
+- Encriptación AES-256 para el almacenamiento local de llaves sensibles.
 
 ### 🛡️ Análisis & Auditoría
-- **Bias Firewall**: Sistema de monitoreo en tiempo real para detectar y mitigar sesgos en modelos y datos.
-- **Hype Detector**: Filtro de "ruido" informativo que analiza señales en noticias y papers para medir su sustancia técnica real.
-- **SolveIt Iterator**: Dashboard de gestión iterativa para el seguimiento de sprints y convergencia de soluciones.
+- **Bias Firewall**: Monitoreo de sesgos en tiempo real.
+- **Hype Detector**: Filtrado inteligente de ruido técnico.
+- **SolveIt Iterator**: Gestión de sprints y convergencia iterativa.
 
-## Tecnologías Utilizadas
-- **React 18**
-- **Vite**
-- **Tailwind CSS**
-- **Lucide React (Iconos)**
+## 🚀 Tecnologías
+- **React 18** + **Vite**
+- **Zustand** (State Management)
+- **Tailwind CSS** (Styling)
+- **Monaco Editor** (Code Editing)
+- **Lucide React** (Iconography)
 
-## Configuración y Ejecución
-
-### Requisitos Previos
-- Node.js (v18 o superior)
-- npm o yarn
+## 🔧 Configuración
 
 ### Instalación
 ```bash
@@ -39,12 +62,7 @@ npm install
 npm run dev
 ```
 
-### Construcción para Producción
+### Construcción
 ```bash
 npm run build
-```
-
-### Linting
-```bash
-npm run lint
 ```

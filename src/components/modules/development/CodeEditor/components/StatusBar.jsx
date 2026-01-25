@@ -2,7 +2,9 @@ import { useCodeStore } from '../../../../../store/codeStore';
 import { GitBranch, RefreshCw, Check, AlertCircle } from 'lucide-react';
 
 const StatusBar = () => {
-  const { currentFile, unsavedFiles } = useCodeStore();
+  const { getCurrentFile, getUnsavedFiles } = useCodeStore();
+  const currentFile = getCurrentFile();
+  const unsavedFiles = getUnsavedFiles() || [];
 
   return (
     <div className="h-6 bg-[#0d1117] border-t border-white/10 px-4 flex items-center justify-between text-[10px] text-gray-400 fixed bottom-0 left-0 right-0 z-50">

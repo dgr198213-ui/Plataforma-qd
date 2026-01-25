@@ -15,11 +15,12 @@ const LANGUAGES = {
 
 const MonacoEditor = () => {
   const {
-    currentFile,
+    getCurrentFile,
     updateFileContent,
     settings
   } = useCodeStore();
 
+  const currentFile = getCurrentFile();
   const editorRef = useRef(null);
 
   const handleEditorDidMount = (editor) => {
@@ -40,9 +41,9 @@ const MonacoEditor = () => {
         value={currentFile?.content || ''}
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}
-        theme={settings.theme || 'vs-dark'}
+        theme={settings?.theme || 'vs-dark'}
         options={{
-          fontSize: settings.fontSize || 14,
+          fontSize: settings?.fontSize || 14,
           minimap: { enabled: false },
           automaticLayout: true,
           padding: { top: 16 },
