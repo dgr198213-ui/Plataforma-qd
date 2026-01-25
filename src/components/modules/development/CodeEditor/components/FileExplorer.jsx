@@ -18,6 +18,7 @@ const FileExplorer = () => {
 
   const [expandedFolders, setExpandedFolders] = useState(new Set(['root']));
   const [searchQuery, setSearchQuery] = useState('');
+  const [showHidden, setShowHidden] = useState(false);
 
   const getFileIcon = (language) => {
     const iconMap = {

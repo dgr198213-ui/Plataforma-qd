@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X, Users, Circle, Copy, Check, Wifi, WifiOff, Link as LinkIcon } from 'lucide-react';
+import { X, Users, UserPlus, Circle, Copy, Check, Wifi, WifiOff, Link as LinkIcon } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const CollaborationPanel = ({ onClose }) => {
   const {
     collaborators,
+    addCollaborator,
     removeCollaborator,
     clearAllCollaborators
   } = useCodeStore();
