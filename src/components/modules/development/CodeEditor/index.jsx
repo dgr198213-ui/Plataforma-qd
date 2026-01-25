@@ -1,27 +1,31 @@
 import { useState, useEffect } from 'react';
-import {
-  FileTabs, FileExplorer, LivePreview, GitPanel,
-  CollaborationPanel, SnippetsPanel, CommandPalette,
-  MonacoEditor, Terminal, StatusBar, Header
+import { 
+  FileTabs, FileExplorer, LivePreview, GitPanel, 
+  CollaborationPanel, SnippetsPanel, CommandPalette, 
+  MonacoEditor, Terminal, StatusBar, Header 
 } from './components';
+import GlobalSearch from './components/GlobalSearch';
+import DiffViewer from './components/DiffViewer';
+import Minimap from './components/Minimap';
 import { useCodeStore } from '../../../../store/codeStore';
 
 const CodeEditor = ({ onBack }) => {
   const {
-    loadFiles,
     getCurrentFile,
     appendTerminalOutput,
-    saveFile
+    saveFile,
+    currentFileId,
+    updateFileContent
   } = useCodeStore();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
+  const [isDiffOpen, setIsDiffOpen] = useState(false);
   const [activePanel, setActivePanel] = useState('git'); // 'git', 'collab', 'snippets'
   const [isExecuting, setIsExecuting] = useState(false);
 
-  useEffect(() => {
-    loadFiles();
-  }, [loadFiles]);
+  const currentFile = getCurrentFile();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -29,8 +33,13 @@ const CodeEditor = ({ onBack }) => {
         e.preventDefault();
         setIsCommandPaletteOpen(true);
       }
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'F') {
+        e.preventDefault();
+        setIsGlobalSearchOpen(true);
+      }
       if (e.key === 'Escape') {
         setIsCommandPaletteOpen(false);
+        setIsGlobalSearchOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -40,7 +49,6 @@ const CodeEditor = ({ onBack }) => {
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
   const runCode = async () => {
-    const currentFile = getCurrentFile();
     if (!currentFile) return;
 
     setIsExecuting(true);
@@ -56,6 +64,7 @@ const CodeEditor = ({ onBack }) => {
       };
 
       if (currentFile.language === 'javascript' || currentFile.language === 'jsx') {
+        // eslint-disable-next-line no-eval
         eval(currentFile.content);
         appendTerminalOutput(logs.length > 0 ? logs.join('\n') + '\n' : '');
         appendTerminalOutput('> ✓ Ejecución completada con éxito\n');
@@ -71,10 +80,9 @@ const CodeEditor = ({ onBack }) => {
   };
 
   const handleSave = () => {
-    const currentFile = getCurrentFile();
-    if (currentFile) {
-      saveFile(currentFile.id);
-      appendTerminalOutput(`> 💾 Archivo guardado: ${currentFile.name}\n`);
+    if (currentFileId) {
+      saveFile(currentFileId);
+      appendTerminalOutput(`> 💾 Archivo guardado: ${currentFile?.name}\n`);
     }
   };
 
@@ -91,22 +99,61 @@ const CodeEditor = ({ onBack }) => {
       />
 
       {/* Layout principal */}
-      <div className="flex-1 flex overflow-hidden pb-6"> {/* pb-6 to account for StatusBar */}
+      <div className="flex-1 flex overflow-hidden pb-6">
         {/* Panel izquierdo - Explorador */}
         <FileExplorer />
 
         {/* Área central - Editor y Previa */}
         <div className="flex-1 flex flex-col min-w-0">
           <FileTabs />
-          <div className="flex-1 flex min-h-0">
-            <MonacoEditor />
+          <div className="flex-1 flex min-h-0 relative">
+            <div className="flex-1 flex flex-col relative">
+              <MonacoEditor 
+                file={currentFile}
+                onChange={(content) => updateFileContent(currentFileId, content)}
+              />
+              
+              {/* Botones de acción rápida flotantes */}
+              <div className="absolute bottom-4 right-4 flex gap-2 z-10">
+                <button 
+                  onClick={() => setIsDiffOpen(!isDiffOpen)}
+                  className={`p-2 rounded-full border transition-all ${isDiffOpen ? 'bg-[#13ecc8] text-[#10221f] border-[#13ecc8]' : 'bg-[#192233] text-gray-400 border-white/10 hover:border-[#13ecc8]'}`}
+                  title="Comparar cambios"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 3 21 8 16 13"/><path d="M21 8H9a5 5 0 0 0 0 10h9"/><path d="m8 21-5-5 5-5"/><path d="M3 16h12a5 5 0 0 0 0-10H5"/></svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Minimap Lateral */}
+            {currentFile && (
+              <Minimap 
+                code={currentFile.content} 
+                activeLineNumber={1} 
+                onLineClick={(line) => console.log('Ir a línea:', line)} 
+              />
+            )}
+
+            {/* Panel de Previa */}
             <LivePreview />
+
+            {/* Panel de Diff (Overlay lateral) */}
+            {isDiffOpen && currentFile && (
+              <div className="absolute inset-y-0 right-0 w-1/2 z-20 shadow-2xl">
+                <DiffViewer 
+                  original={currentFile.originalContent}
+                  modified={currentFile.content}
+                  fileName={currentFile.name}
+                  onClose={() => setIsDiffOpen(false)}
+                />
+              </div>
+            )}
           </div>
           <Terminal />
         </div>
 
         {/* Paneles derechos */}
-        <div className="flex flex-col border-l border-white/10 overflow-y-auto bg-[#0d1117]">
+        <div className="flex flex-col border-l border-white/10 overflow-y-auto bg-[#0d1117] w-64">
           <div className="flex border-b border-white/10">
             <button
               onClick={() => setActivePanel('git')}
@@ -138,10 +185,14 @@ const CodeEditor = ({ onBack }) => {
       {/* Barra de estado */}
       <StatusBar />
 
-      {/* Comandos */}
+      {/* Modales de Herramientas */}
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
+      />
+      <GlobalSearch 
+        isOpen={isGlobalSearchOpen} 
+        onClose={() => setIsGlobalSearchOpen(false)} 
       />
     </div>
   );

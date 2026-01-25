@@ -1,45 +1,40 @@
 import { useState, useMemo } from 'react';
 import {
   Folder, FolderOpen, ChevronRight, ChevronDown,
-  Search, Eye, EyeOff, FolderPlus, FilePlus, RefreshCw
+  Search, Eye, EyeOff, FolderPlus, FilePlus, RefreshCw, Trash2
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const FileExplorer = () => {
   const {
-    projects = [],
-    currentProjectId,
     files = [],
     createFile,
-    createFolder,
-    setCurrentProject,
     currentFileId,
-    setActiveFile
+    setActiveFile,
+    deleteFile
   } = useCodeStore();
 
   const [expandedFolders, setExpandedFolders] = useState(new Set(['root']));
   const [searchQuery, setSearchQuery] = useState('');
   const [showHidden, setShowHidden] = useState(false);
-  const [viewMode, setViewMode] = useState('tree'); // 'tree' | 'list'
 
   const projectStructure = useMemo(() => {
-    const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
-
     const children = files.map(file => ({
       id: file.id,
       name: file.name,
       type: 'file',
       language: file.language,
-      hidden: file.name?.startsWith('.')
+      hidden: file.name?.startsWith('.'),
+      saved: file.saved
     }));
 
     return {
       id: 'root',
-      name: currentProject?.name || 'Proyecto Howard',
+      name: 'Proyecto Howard',
       type: 'folder',
       children: children
     };
-  }, [projects, currentProjectId, files]);
+  }, [files]);
 
   const getFileIcon = (item) => {
     if (item.type === 'folder') {
@@ -53,13 +48,10 @@ const FileExplorer = () => {
     const iconMap = {
       'javascript': '📄',
       'jsx': '⚛️',
-      'tsx': '📘',
+      'typescript': '📘',
       'html': '🌐',
       'css': '🎨',
       'json': '📋',
-      'markdown': '📝',
-      'env': '🔧',
-      'binary': '📦',
       'default': '📄'
     };
 
@@ -110,6 +102,17 @@ const FileExplorer = () => {
               <span className={`flex-1 text-[11px] truncate ${item.hidden ? 'opacity-50 italic' : ''}`}>
                 {item.name}
               </span>
+              {item.type === 'file' && !item.saved && (
+                <div className="w-1.5 h-1.5 rounded-full bg-[#13ecc8]" />
+              )}
+              {item.type === 'file' && (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); deleteFile(item.id); }}
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/20 hover:text-red-500 rounded transition-all"
+                >
+                  <Trash2 size={12} />
+                </button>
+              )}
             </div>
 
             {item.type === 'folder' && isExpanded && item.children && (
@@ -146,35 +149,21 @@ const FileExplorer = () => {
             className="w-full bg-[#192233] border border-white/5 rounded px-6 py-1 text-[10px] text-white placeholder-gray-600 focus:outline-none focus:border-[#13ecc8]/30"
           />
         </div>
-
-        <div className="flex gap-1">
-           <button onClick={() => setViewMode('tree')} className={`flex-1 py-1 text-[8px] font-bold rounded ${viewMode === 'tree' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233] text-gray-400'}`}>ÁRBOL</button>
-           <button onClick={() => setViewMode('list')} className={`flex-1 py-1 text-[8px] font-bold rounded ${viewMode === 'list' ? 'bg-[#13ecc8] text-[#10221f]' : 'bg-[#192233] text-gray-400'}`}>LISTA</button>
-        </div>
-      </div>
-
-      <div className="px-3 py-2 border-b border-white/5">
-        <select
-          value={currentProjectId}
-          onChange={(e) => setCurrentProject(e.target.value)}
-          className="w-full bg-transparent text-[10px] text-gray-400 outline-none cursor-pointer"
-        >
-          {projects.map(project => (
-            <option key={project.id} value={project.id} className="bg-[#0d1117]">{project.name}</option>
-          ))}
-        </select>
       </div>
 
       <div className="flex-1 overflow-y-auto py-2">
         {renderTree([projectStructure])}
       </div>
 
-      <div className="p-3 border-t border-white/10 grid grid-cols-2 gap-2">
-        <button onClick={() => createFile('nuevo.js')} className="flex items-center justify-center gap-1 py-1.5 bg-[#192233] rounded text-[9px] font-bold text-gray-300 hover:text-white border border-white/5 transition-colors">
-          <FilePlus size={12} /> ARCHIVO
-        </button>
-        <button onClick={() => createFolder('carpeta')} className="flex items-center justify-center gap-1 py-1.5 bg-[#192233] rounded text-[9px] font-bold text-gray-300 hover:text-white border border-white/5 transition-colors">
-          <FolderPlus size={12} /> CARPETA
+      <div className="p-3 border-t border-white/10 grid grid-cols-1 gap-2">
+        <button 
+          onClick={() => {
+            const name = prompt('Nombre del archivo:');
+            if (name) createFile(name);
+          }} 
+          className="flex items-center justify-center gap-1 py-1.5 bg-[#192233] rounded text-[9px] font-bold text-gray-300 hover:text-white border border-white/5 transition-colors"
+        >
+          <FilePlus size={12} /> NUEVO ARCHIVO
         </button>
       </div>
     </div>

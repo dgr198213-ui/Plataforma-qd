@@ -59,8 +59,6 @@ const FileTabs = () => {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    // const dragIndex = parseInt(e.dataTransfer.getData('tabIndex'));
-    // Reordenar pestañas si fuera necesario
     setDragOverIndex(null);
   };
 
@@ -69,7 +67,7 @@ const FileTabs = () => {
   };
 
   return (
-    <div className="flex bg-[#0d1117] border-b border-white/10 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-700">
+    <div className="flex bg-[#0d1117] border-b border-white/10 overflow-x-auto no-scrollbar">
       <div className="flex items-center pl-2 pr-2 border-r border-white/10">
         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Editor</span>
       </div>
@@ -98,20 +96,17 @@ const FileTabs = () => {
               `}
               onClick={() => handleTabClick(file.id)}
             >
-              {/* Ícono del archivo */}
               <span className="text-sm">
                 {getFileIcon(file.language)}
               </span>
 
-              {/* Nombre del archivo */}
               <span className="flex-1 text-[11px] font-medium truncate">
                 {file.name}
               </span>
 
-              {/* Indicador de cambios sin guardar */}
               {isUnsaved && (
                 <div className="flex items-center">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 group-hover:hidden" />
+                  <div className="w-2 h-2 rounded-full bg-[#13ecc8] group-hover:hidden" />
                   <button
                     onClick={(e) => handleSaveTab(e, file.id)}
                     className="hidden group-hover:block p-0.5 hover:bg-white/10 rounded transition-opacity"
@@ -122,7 +117,6 @@ const FileTabs = () => {
                 </div>
               )}
 
-              {/* Botón de cerrar */}
               <button
                 onClick={(e) => handleCloseTab(e, file.id)}
                 className={`
@@ -137,9 +131,6 @@ const FileTabs = () => {
           );
         })}
       </div>
-
-      {/* Espacio adicional */}
-      <div className="flex-1 border-b border-white/10"></div>
     </div>
   );
 };
