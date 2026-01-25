@@ -1,59 +1,113 @@
-import { useState } from 'react';
-import Dashboard from './components/Dashboard';
-import CredentialsPanel from './components/CredentialsPanel';
-import CodeEditor from './components/CodeEditor';
-import NoCodeChat from './components/NoCodeChat';
-import Connectors from './components/Connectors';
-import ProjectsManager from './components/ProjectsManager';
-import BiasFirewall from './components/BiasFirewall';
-import HypeDetector from './components/HypeDetector';
-import SolveItIterator from './components/SolveItIterator';
-import BottomNav from './components/BottomNav';
+import { Suspense, lazy, useState } from 'react';
+import { ErrorBoundary } from './core/components/ErrorBoundary';
+import LoadingScreen from './core/components/LoadingScreen';
+import BottomNav from './components/shared/BottomNav';
+import { DocumentTitle } from './core/hooks/useDocumentTitle';
 
-const MODULES = {
-  DASHBOARD: 'dashboard',
-  CREDENTIALS: 'credentials',
-  CODE_EDITOR: 'code_editor',
-  NO_CODE_CHAT: 'no_code_chat',
-  CONNECTORS: 'connectors',
-  PROJECTS: 'projects',
-  BIAS_FIREWALL: 'bias_firewall',
-  HYPE_DETECTOR: 'hype_detector',
-  SOLVEIT: 'solveit'
+// Dashboard se carga inmediatamente
+import Dashboard from './components/shared/Dashboard';
+import { MODULES } from './constants/modules';
+
+// Lazy loading por categoría
+const CredentialsPanel = lazy(() => import('./components/modules/credentials/CredentialsPanel'));
+const CodeEditor = lazy(() => import('./components/modules/development/CodeEditor'));
+const NoCodeChat = lazy(() => import('./components/modules/development/NoCodeChat'));
+const Connectors = lazy(() => import('./components/modules/development/Connectors'));
+const ProjectsManager = lazy(() => import('./components/modules/projects/ProjectsManager'));
+const BiasFirewall = lazy(() => import('./components/modules/analysis/BiasFirewall'));
+const HypeDetector = lazy(() => import('./components/modules/analysis/HypeDetector'));
+const SolveItIterator = lazy(() => import('./components/modules/analysis/SolveItIterator'));
+
+const MODULE_CONFIG = {
+  [MODULES.DASHBOARD]: {
+    component: Dashboard,
+    showBottomNav: true,
+    title: 'Howard OS'
+  },
+  [MODULES.CREDENTIALS]: {
+    component: CredentialsPanel,
+    showBottomNav: false,
+    title: 'Credenciales'
+  },
+  [MODULES.CODE_EDITOR]: {
+    component: CodeEditor,
+    showBottomNav: false,
+    title: 'Editor de Código',
+    fullscreen: true
+  },
+  [MODULES.NO_CODE_CHAT]: {
+    component: NoCodeChat,
+    showBottomNav: true,
+    title: 'No-Code Chat'
+  },
+  [MODULES.CONNECTORS]: {
+    component: Connectors,
+    showBottomNav: false,
+    title: 'Conectores'
+  },
+  [MODULES.PROJECTS]: {
+    component: ProjectsManager,
+    showBottomNav: true,
+    title: 'Proyectos'
+  },
+  [MODULES.BIAS_FIREWALL]: {
+    component: BiasFirewall,
+    showBottomNav: false,
+    title: 'Bias Firewall'
+  },
+  [MODULES.HYPE_DETECTOR]: {
+    component: HypeDetector,
+    showBottomNav: false,
+    title: 'Hype Detector'
+  },
+  [MODULES.SOLVEIT]: {
+    component: SolveItIterator,
+    showBottomNav: false,
+    title: 'SolveIt Iterator'
+  }
 };
 
 export default function App() {
   const [currentModule, setCurrentModule] = useState(MODULES.DASHBOARD);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const renderModule = () => {
-    switch (currentModule) {
-      case MODULES.DASHBOARD:
-        return <Dashboard onNavigate={setCurrentModule} />;
-      case MODULES.CREDENTIALS:
-        return <CredentialsPanel onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.CODE_EDITOR:
-        return <CodeEditor onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.NO_CODE_CHAT:
-        return <NoCodeChat onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.CONNECTORS:
-        return <Connectors onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.PROJECTS:
-        return <ProjectsManager onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.BIAS_FIREWALL:
-        return <BiasFirewall onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.HYPE_DETECTOR:
-        return <HypeDetector onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      case MODULES.SOLVEIT:
-        return <SolveItIterator onBack={() => setCurrentModule(MODULES.DASHBOARD)} />;
-      default:
-        return <Dashboard onNavigate={setCurrentModule} />;
-    }
+  const config = MODULE_CONFIG[currentModule];
+  const Component = config.component;
+
+  const handleNavigate = (module) => {
+    if (module === currentModule) return;
+
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentModule(module);
+      setIsTransitioning(false);
+    }, 150);
   };
 
+  const handleBack = () => handleNavigate(MODULES.DASHBOARD);
+
   return (
-    <div className="bg-[#10221f] min-h-screen">
-      {renderModule()}
-      <BottomNav currentModule={currentModule} onNavigate={setCurrentModule} />
-    </div>
+    <ErrorBoundary>
+      <div className={`bg-[#10221f] min-h-screen ${config.fullscreen ? 'h-screen overflow-hidden' : ''}`}>
+        <DocumentTitle title={config.title} />
+
+        <div className={`transition-opacity duration-150 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+          <Suspense fallback={<LoadingScreen />}>
+            {currentModule === MODULES.DASHBOARD ? (
+              <Component onNavigate={handleNavigate} />
+            ) : (
+              <Component onBack={handleBack} />
+            )}
+          </Suspense>
+        </div>
+
+        {config.showBottomNav && (
+          <BottomNav
+            currentModule={currentModule}
+            onNavigate={handleNavigate}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
