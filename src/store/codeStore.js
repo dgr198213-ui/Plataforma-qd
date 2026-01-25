@@ -106,6 +106,11 @@ export const useCodeStore = create(
         return [...DEFAULT_SNIPPETS, ...snippets];
       },
 
+      getUnsavedFiles: () => {
+        const { files = [] } = get();
+        return files.filter(f => !f.saved).map(f => f.id);
+      },
+
       // ==================== ARCHIVOS ====================
       createFile: (name, language = 'javascript', path = null, content = '') => {
         if (!name || typeof name !== 'string') {
@@ -308,17 +313,16 @@ export const useCodeStore = create(
       },
 
       // ==================== UTILIDADES ====================
-      getUnsavedFiles: () => {
-        const { files = [] } = get();
-        return files.filter(f => !f.saved);
-      },
-
       setTerminalOutput: (output) => {
         set({ terminalOutput: output });
       },
 
       appendTerminalOutput: (output) => {
         set(state => ({ terminalOutput: (state.terminalOutput || '') + output }));
+      },
+
+      setCurrentProject: (projectId) => {
+        set({ currentProjectId: projectId });
       },
 
       resetStore: () => {

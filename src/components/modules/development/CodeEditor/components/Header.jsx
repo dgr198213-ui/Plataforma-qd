@@ -5,8 +5,9 @@ import {
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const Header = ({ onBack, isFullscreen, toggleFullscreen, onRun, onSave, isExecuting }) => {
-  const { getCurrentFile, currentProject } = useCodeStore();
+  const { getCurrentFile, projects, currentProjectId } = useCodeStore();
   const currentFile = getCurrentFile();
+  const currentProject = projects.find(p => p.id === currentProjectId);
 
   return (
     <div className="bg-[#10221f]/95 backdrop-blur-md border-b border-white/10 p-3 flex items-center justify-between z-10">

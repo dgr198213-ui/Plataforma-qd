@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { X, Save, AlertCircle } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const FileTabs = () => {
   const {
     files,
-    activeFileId,
+    currentFileId,
+    openFiles: openFileIds,
     setActiveFile,
     closeFile,
     saveFile,
-    unsavedFiles
+    getUnsavedFiles
   } = useCodeStore();
 
   const [dragOverIndex, setDragOverIndex] = useState(null);
 
-  const openFiles = files; // Simplified: Assuming all files in store are "open" tabs in this simplified version
+  const openFiles = (openFileIds || []).map(id => files.find(f => f.id === id)).filter(Boolean);
+  const unsavedFiles = getUnsavedFiles();
 
   const getFileIcon = (language) => {
     const iconMap = {
@@ -43,10 +45,7 @@ const FileTabs = () => {
 
   const handleSaveTab = (e, fileId) => {
     e.stopPropagation();
-    const file = files.find(f => f.id === fileId);
-    if (file) {
-      saveFile(fileId, file.content);
-    }
+    saveFile(fileId);
   };
 
   const handleDragStart = (e, index) => {
@@ -58,15 +57,10 @@ const FileTabs = () => {
     setDragOverIndex(index);
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = (e) => {
     e.preventDefault();
-    const dragIndex = parseInt(e.dataTransfer.getData('tabIndex'));
-
-    if (dragIndex !== dropIndex) {
-      // Reordenar pestañas
-      // Esto requeriría una acción adicional en el store para persistir el orden si se desea
-    }
-
+    // const dragIndex = parseInt(e.dataTransfer.getData('tabIndex'));
+    // Reordenar pestañas si fuera necesario
     setDragOverIndex(null);
   };
 
@@ -74,20 +68,15 @@ const FileTabs = () => {
     setDragOverIndex(null);
   };
 
-  const handleContextMenu = (e, fileId) => {
-    e.preventDefault();
-    console.log('Context menu for file:', fileId);
-  };
-
   return (
     <div className="flex bg-[#0d1117] border-b border-white/10 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-700">
-      <div className="flex items-center pl-2">
-        <span className="text-xs text-gray-500">EDITOR</span>
+      <div className="flex items-center pl-2 pr-2 border-r border-white/10">
+        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Editor</span>
       </div>
 
       <div className="flex flex-1">
         {openFiles.map((file, index) => {
-          const isActive = file.id === activeFileId;
+          const isActive = file.id === currentFileId;
           const isUnsaved = unsavedFiles.includes(file.id);
 
           return (
@@ -98,15 +87,14 @@ const FileTabs = () => {
               onDragOver={(e) => handleDragOver(e, index)}
               onDrop={(e) => handleDrop(e, index)}
               onDragEnd={handleDragEnd}
-              onContextMenu={(e) => handleContextMenu(e, file.id)}
               className={`
-                flex items-center gap-2 px-4 py-2 border-r border-white/5 min-w-[180px] max-w-[240px]
+                flex items-center gap-2 px-4 py-2 border-r border-white/5 min-w-[140px] max-w-[200px]
                 ${isActive
-                  ? 'bg-[#192233] text-white'
+                  ? 'bg-[#192233] text-white border-t-2 border-t-[#13ecc8]'
                   : 'bg-[#0d1117] text-gray-400 hover:bg-white/5'
                 }
                 ${dragOverIndex === index ? 'border-l-2 border-[#13ecc8]' : ''}
-                transition-colors cursor-pointer group
+                transition-all cursor-pointer group relative
               `}
               onClick={() => handleTabClick(file.id)}
             >
@@ -116,23 +104,20 @@ const FileTabs = () => {
               </span>
 
               {/* Nombre del archivo */}
-              <span className="flex-1 text-xs font-medium truncate">
+              <span className="flex-1 text-[11px] font-medium truncate">
                 {file.name}
-                {file.isNew && (
-                  <span className="ml-1 text-[10px] text-[#13ecc8]">(nuevo)</span>
-                )}
               </span>
 
               {/* Indicador de cambios sin guardar */}
               {isUnsaved && (
-                <div className="flex items-center gap-1">
-                  <AlertCircle size={10} className="text-yellow-500 animate-pulse" />
+                <div className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-yellow-500 group-hover:hidden" />
                   <button
                     onClick={(e) => handleSaveTab(e, file.id)}
-                    className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-opacity"
+                    className="hidden group-hover:block p-0.5 hover:bg-white/10 rounded transition-opacity"
                     title="Guardar cambios"
                   >
-                    <Save size={12} className="text-gray-400" />
+                    <Save size={12} className="text-gray-400 hover:text-white" />
                   </button>
                 </div>
               )}
@@ -153,7 +138,7 @@ const FileTabs = () => {
         })}
       </div>
 
-      {/* Espacio adicional si no hay suficientes pestañas */}
+      {/* Espacio adicional */}
       <div className="flex-1 border-b border-white/10"></div>
     </div>
   );

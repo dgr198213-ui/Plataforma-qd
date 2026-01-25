@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  RefreshCw, Maximize2, Minimize2, ExternalLink,
-  Smartphone, Tablet, Monitor, Eye, EyeOff,
-  Download, Copy, RotateCw
+  RefreshCw, Maximize2, Minimize2, Download,
+  Smartphone, Tablet, Monitor, Eye, EyeOff
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 
 const LivePreview = () => {
-  const { activeFile, files } = useCodeStore();
+  const { currentFileId, files } = useCodeStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState('desktop'); // 'mobile' | 'tablet' | 'desktop'
@@ -17,8 +16,8 @@ const LivePreview = () => {
   const iframeRef = useRef(null);
   const refreshTimeoutRef = useRef(null);
 
-  const activeFileObject = activeFile
-    ? files.find(f => f.id === activeFile)
+  const activeFileObject = currentFileId
+    ? files.find(f => f.id === currentFileId)
     : null;
 
   const activeFileContent = activeFileObject?.content || '';
@@ -61,13 +60,6 @@ const LivePreview = () => {
             white-space: pre-wrap;
             font-family: 'Courier New', monospace;
         }
-        .error {
-            color: #ff6b6b;
-            padding: 10px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 4px;
-            margin: 10px 0;
-        }
         .success {
             color: #13ecc8;
             padding: 10px;
@@ -92,32 +84,16 @@ const LivePreview = () => {
     <script>
         // Capturar logs de la consola
         const originalLog = console.log;
-        const originalError = console.error;
-        const originalWarn = console.warn;
-
         console.log = function(...args) {
             originalLog.apply(console, args);
             window.parent.postMessage({ type: 'CONSOLE_LOG', args: args.map(arg => String(arg)) }, '*');
-        };
-
-        console.error = function(...args) {
-            originalError.apply(console, args);
-            window.parent.postMessage({ type: 'CONSOLE_ERROR', args: args.map(arg => String(arg)) }, '*');
-        };
-
-        console.warn = function(...args) {
-            originalWarn.apply(console, args);
-            window.parent.postMessage({ type: 'CONSOLE_WARN', args: args.map(arg => String(arg)) }, '*');
         };
 
         // Capturar errores no atrapados
         window.addEventListener('error', (event) => {
             window.parent.postMessage({
                 type: 'RUNTIME_ERROR',
-                error: event.error?.message || event.message,
-                filename: event.filename,
-                lineno: event.lineno,
-                colno: event.colno
+                error: event.error?.message || event.message
             }, '*');
         });
     </script>
@@ -165,12 +141,9 @@ const LivePreview = () => {
     const handleMessage = (event) => {
       if (event.data.type === 'CONSOLE_LOG') {
         console.log('[Preview Log]:', ...event.data.args);
-      } else if (event.data.type === 'CONSOLE_ERROR') {
-        console.error('[Preview Error]:', ...event.data.args);
-        setError(event.data.args.join(' '));
       } else if (event.data.type === 'RUNTIME_ERROR') {
         console.error('[Runtime Error]:', event.data.error);
-        setError(`${event.data.error} at ${event.data.filename}:${event.data.lineno}`);
+        setError(event.data.error);
       }
     };
 
@@ -180,16 +153,6 @@ const LivePreview = () => {
 
   const handleFullscreen = () => {
     if (!iframeRef.current) return;
-
-    if (!isFullscreen) {
-      if (iframeRef.current.requestFullscreen) {
-        iframeRef.current.requestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
     setIsFullscreen(!isFullscreen);
   };
 
@@ -202,12 +165,6 @@ const LivePreview = () => {
     a.download = `preview-${Date.now()}.html`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const copyPreviewUrl = () => {
-    if (previewUrl) {
-      navigator.clipboard.writeText(previewUrl);
-    }
   };
 
   const getViewportDimensions = () => {
@@ -235,180 +192,103 @@ const LivePreview = () => {
   }, [clearPreview]);
 
   return (
-    <div className="flex flex-col h-full bg-[#0d1117]">
+    <div className="flex flex-col h-full bg-[#0d1117] border-l border-white/10">
       {/* Header de controles */}
       <div className="flex items-center justify-between p-3 border-b border-white/10">
         <div className="flex items-center gap-2">
           <Eye size={16} className="text-[#13ecc8]" />
-          <h3 className="text-sm font-bold">VISTA PREVIA</h3>
-          {activeFileObject && (
-            <span className="text-xs text-gray-400 ml-2">
-              {activeFileObject.name}
-            </span>
-          )}
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Vista Previa</h3>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Selector de vista */}
           <div className="flex bg-[#192233] rounded-lg p-0.5">
             <button
               onClick={() => setViewMode('mobile')}
-              className={`p-1.5 rounded ${viewMode === 'mobile' ? 'bg-[#13ecc8] text-[#10221f]' : 'hover:bg-white/5'}`}
+              className={`p-1 rounded ${viewMode === 'mobile' ? 'bg-[#13ecc8] text-[#10221f]' : 'text-gray-400 hover:bg-white/5'}`}
               title="Vista móvil"
             >
-              <Smartphone size={14} />
+              <Smartphone size={12} />
             </button>
             <button
               onClick={() => setViewMode('tablet')}
-              className={`p-1.5 rounded ${viewMode === 'tablet' ? 'bg-[#13ecc8] text-[#10221f]' : 'hover:bg-white/5'}`}
+              className={`p-1 rounded ${viewMode === 'tablet' ? 'bg-[#13ecc8] text-[#10221f]' : 'text-gray-400 hover:bg-white/5'}`}
               title="Vista tablet"
             >
-              <Tablet size={14} />
+              <Tablet size={12} />
             </button>
             <button
               onClick={() => setViewMode('desktop')}
-              className={`p-1.5 rounded ${viewMode === 'desktop' ? 'bg-[#13ecc8] text-[#10221f]' : 'hover:bg-white/5'}`}
+              className={`p-1 rounded ${viewMode === 'desktop' ? 'bg-[#13ecc8] text-[#10221f]' : 'text-gray-400 hover:bg-white/5'}`}
               title="Vista desktop"
             >
-              <Monitor size={14} />
+              <Monitor size={12} />
             </button>
           </div>
 
-          {/* Botones de acción */}
           <button
             onClick={refreshPreview}
             disabled={isRefreshing}
-            className="p-1.5 hover:bg-white/10 rounded transition-colors disabled:opacity-50"
-            title="Recargar vista previa"
+            className="p-1.5 hover:bg-white/10 rounded transition-colors disabled:opacity-50 text-gray-400"
+            title="Recargar"
           >
-            <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={12} className={isRefreshing ? 'animate-spin' : ''} />
           </button>
 
           <button
             onClick={handleFullscreen}
-            className="p-1.5 hover:bg-white/10 rounded transition-colors"
-            title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+            className="p-1.5 hover:bg-white/10 rounded transition-colors text-gray-400"
+            title="Pantalla completa"
           >
-            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
           </button>
 
           <button
             onClick={downloadPreview}
-            className="p-1.5 hover:bg-white/10 rounded transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded transition-colors text-gray-400"
             title="Descargar HTML"
           >
-            <Download size={14} />
+            <Download size={12} />
           </button>
 
           <button
             onClick={() => setShowCode(!showCode)}
-            className="p-1.5 hover:bg-white/10 rounded transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded transition-colors text-gray-400"
             title={showCode ? "Ocultar código" : "Mostrar código"}
           >
-            {showCode ? <EyeOff size={14} /> : <Eye size={14} />}
+            {showCode ? <EyeOff size={12} /> : <Eye size={12} />}
           </button>
         </div>
       </div>
 
-      {/* Indicador de vista actual */}
-      {viewMode !== 'desktop' && (
-        <div className="px-3 py-1 bg-[#192233] text-center">
-          <span className="text-xs text-gray-400">
-            Vista: {viewport.name} ({viewport.width} × {viewport.height})
-          </span>
-        </div>
-      )}
-
       {/* Área de vista previa */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden bg-white flex items-center justify-center">
         {error && (
-          <div className="absolute top-2 left-2 right-2 z-10">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-red-400 text-sm">
-                <span>⚠️</span>
-                <span className="flex-1">{error}</span>
-                <button
-                  onClick={() => setError(null)}
-                  className="text-xs px-2 py-1 hover:bg-red-500/20 rounded"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
+          <div className="absolute top-0 left-0 right-0 bg-red-500 text-white p-2 text-xs z-10">
+            Error: {error}
           </div>
         )}
-
-        {/* Contenedor del iframe con dimensiones específicas */}
-        <div
-          className={`
-            w-full h-full flex items-center justify-center
-            ${viewMode !== 'desktop' ? 'p-4' : ''}
-          `}
-          style={{
-            backgroundColor: viewMode !== 'desktop' ? '#192233' : 'transparent'
+        
+        <div 
+          className="transition-all duration-300 shadow-2xl overflow-hidden"
+          style={{ 
+            width: viewport.width, 
+            height: viewport.height,
+            maxWidth: '100%',
+            maxHeight: '100%'
           }}
         >
-          <div
-            className={`
-              relative bg-white shadow-2xl overflow-hidden
-              ${viewMode !== 'desktop' ? 'border-8 border-gray-800 rounded-3xl' : 'w-full h-full'}
-            `}
-            style={{
-              width: viewport.width,
-              height: viewport.height,
-              maxWidth: '100%',
-              maxHeight: '100%'
-            }}
-          >
-            {/* Indicador de carga */}
-            {isRefreshing && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-                <div className="flex flex-col items-center gap-2">
-                  <RotateCw size={24} className="animate-spin text-[#13ecc8]" />
-                  <span className="text-xs text-white">Actualizando vista previa...</span>
-                </div>
-              </div>
-            )}
-
-            {/* Iframe de vista previa */}
+          {previewUrl ? (
             <iframe
               ref={iframeRef}
               src={previewUrl}
+              className="w-full h-full border-none bg-white"
               title="Live Preview"
-              className="w-full h-full border-0"
-              sandbox="allow-scripts allow-same-origin allow-modals allow-forms"
-              allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi"
             />
-          </div>
-        </div>
-      </div>
-
-      {/* Barra de estado */}
-      <div className="flex items-center justify-between px-3 py-2 border-t border-white/10 text-xs text-gray-400">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={copyPreviewUrl}
-            className="flex items-center gap-1 hover:text-white transition-colors"
-          >
-            <Copy size={12} />
-            Copiar URL
-          </button>
-          <button
-            onClick={() => window.open(previewUrl, '_blank')}
-            className="flex items-center gap-1 hover:text-white transition-colors"
-          >
-            <ExternalLink size={12} />
-            Abrir en nueva pestaña
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {previewUrl && (
-            <span className="text-green-500">●</span>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs font-mono bg-[#0d1117]">
+              Esperando contenido...
+            </div>
           )}
-          <span>
-            {previewUrl ? 'Vista previa activa' : 'Esperando contenido...'}
-          </span>
         </div>
       </div>
     </div>
