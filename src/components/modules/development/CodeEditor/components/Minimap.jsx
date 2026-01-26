@@ -8,6 +8,8 @@ const Minimap = ({ code, activeLineNumber, onLineClick }) => {
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     const lines = code.split('\n');
     
     // Configurar tamaño basado en el contenedor

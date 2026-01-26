@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   Folder, FolderOpen, ChevronRight, ChevronDown,
-  Search, Eye, EyeOff, FolderPlus, FilePlus, RefreshCw, Trash2
+  Search, Eye, EyeOff, FilePlus, RefreshCw, Trash2
 } from 'lucide-react';
 import { useCodeStore } from '../../../../../store/codeStore';
 

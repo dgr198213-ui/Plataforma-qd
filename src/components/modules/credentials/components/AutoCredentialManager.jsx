@@ -5,7 +5,6 @@ import { useCredentialsStore } from '../../../../store/credentialsStore';
 const AutoCredentialManager = () => {
   const { addCredential } = useCredentialsStore();
   const [detectedServices, setDetectedServices] = useState([]);
-  const [isImporting, setIsImporting] = useState(false);
 
   // Simulación de detección de servicios (en entorno web real usaríamos APIs específicas o inputs)
   const detectServices = () => {

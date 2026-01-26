@@ -55,7 +55,7 @@ const GlobalSearch = ({ isOpen, onClose }) => {
             </div>
           ) : results.length === 0 ? (
             <div className="p-8 text-center text-gray-500 text-sm">
-              No se encontraron coincidencias para "{query}"
+              No se encontraron coincidencias para &quot;{query}&quot;
             </div>
           ) : (
             <div className="space-y-1">

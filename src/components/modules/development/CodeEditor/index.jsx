@@ -64,7 +64,8 @@ const CodeEditor = ({ onBack }) => {
       };
 
       if (currentFile.language === 'javascript' || currentFile.language === 'jsx') {
-        // eslint-disable-next-line no-eval
+        // SEGURIDAD: eval() se utiliza aquí para permitir la ejecución de código en el navegador
+        // dentro del entorno del IDE. Úselo con precaución y solo con código de confianza.
         eval(currentFile.content);
         appendTerminalOutput(logs.length > 0 ? logs.join('\n') + '\n' : '');
         appendTerminalOutput('> ✓ Ejecución completada con éxito\n');

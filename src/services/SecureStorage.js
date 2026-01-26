@@ -3,6 +3,10 @@ import CryptoJS from 'crypto-js';
 const STORAGE_KEY = 'howard_credentials';
 const SECRET_KEY = import.meta.env.VITE_ENCRYPTION_KEY || 'default-key-change-me';
 
+if (!import.meta.env.VITE_ENCRYPTION_KEY) {
+  console.warn('⚠️ [SecureStorage] VITE_ENCRYPTION_KEY no está definida. Se está usando una clave por defecto INSEGURA.');
+}
+
 export const SecureStorage = {
   encrypt(data) {
     return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
