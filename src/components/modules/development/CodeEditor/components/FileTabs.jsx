@@ -75,7 +75,7 @@ const FileTabs = () => {
       <div className="flex flex-1">
         {openFiles.map((file, index) => {
           const isActive = file.id === currentFileId;
-          const isUnsaved = unsavedFiles.includes(file.id);
+          const isUnsaved = unsavedFiles.some(f => f.id === file.id);
 
           return (
             <div

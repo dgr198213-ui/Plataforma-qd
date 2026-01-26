@@ -84,7 +84,7 @@ const CommandPalette = ({ isOpen, onClose }) => {
         <div className="max-h-[400px] overflow-y-auto p-2">
           {filteredItems.length === 0 ? (
             <div className="p-8 text-center text-gray-500 text-sm">
-              No se encontraron resultados para "{query}"
+              No se encontraron resultados para &quot;{query}&quot;
             </div>
           ) : (
             filteredItems.map((item, index) => {

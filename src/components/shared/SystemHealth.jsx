@@ -51,8 +51,8 @@ const SystemHealth = () => {
 
       setHealth({
         store: {
-          status: 'ok',
-          detail: 'Zustand CodeStore inicializado'
+          status: isLoaded ? 'ok' : 'loading',
+          detail: isLoaded ? 'Zustand CodeStore inicializado' : 'Cargando store...'
         },
         encryption: {
           status: hasKey ? 'ok' : 'warn',

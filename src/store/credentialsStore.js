@@ -36,6 +36,16 @@ export const useCredentialsStore = create((set, get) => ({
     return get().credentials.find(cred => cred.id === id)?.value || null;
   },
 
+  addCredential: (newCred) => {
+    const updated = [...get().credentials, {
+      id: `custom-${Date.now()}`,
+      ...newCred,
+      configured: Boolean(newCred.password || newCred.value)
+    }];
+    set({ credentials: updated });
+    SecureStorage.save(updated);
+  },
+
   clearAll: () => {
     set({ credentials: DEFAULT_CREDENTIALS });
     SecureStorage.clear();
