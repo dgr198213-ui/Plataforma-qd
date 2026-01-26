@@ -131,7 +131,7 @@ const GitPanel = () => {
               onClick={() => setSelectedView(tab)}
               className={`
                 flex-1 px-1 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors
-                \${selectedView === tab
+                ${selectedView === tab
                   ? 'text-[#13ecc8] border-b-2 border-[#13ecc8]'
                   : 'text-gray-500 hover:text-white'
                 }
@@ -293,7 +293,7 @@ const GitPanel = () => {
                   key={index}
                   className={`
                     flex items-center justify-between p-3 rounded-lg cursor-pointer border
-                    \${branch.current ? 'bg-[#13ecc8]/10 border-[#13ecc8]/30' : 'bg-[#192233] border-white/5 hover:border-white/10'}
+                    ${branch.current ? 'bg-[#13ecc8]/10 border-[#13ecc8]/30' : 'bg-[#192233] border-white/5 hover:border-white/10'}
                   `}
                   onClick={() => !branch.current && checkoutBranch(branch.name)}
                 >
