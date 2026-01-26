@@ -313,6 +313,8 @@ export const useCodeStore = create(
         set(state => ({ terminalOutput: (state.terminalOutput || '') + output }));
       },
 
+      setLoaded: (loaded) => set({ isLoaded: loaded }),
+
       resetStore: () => {
         set({
           files: DEFAULT_FILES,
@@ -333,6 +335,9 @@ export const useCodeStore = create(
     }),
     {
       name: 'howard-code-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setLoaded(true);
+      },
       partialize: (state) => ({
         files: state.files,
         snippets: state.snippets,
