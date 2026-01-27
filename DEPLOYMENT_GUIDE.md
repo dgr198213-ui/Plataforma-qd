@@ -2,14 +2,16 @@
 
 He realizado mejoras en la estructura del proyecto para asegurar una conexión estable entre el repositorio, Vercel y Supabase. Sigue estos pasos para completar la configuración:
 
-## 1. Configuración de Supabase
+## 1. Configuración de Supabase (¡Seguridad Reforzada!)
 
-Para que el sistema de persistencia funcione, debes ejecutar el esquema SQL en tu panel de Supabase:
+He actualizado el esquema SQL para solucionar las advertencias de seguridad (RLS Policy Always True). Ahora, cada dato está vinculado al `user_id` del usuario autenticado.
 
 1. Ve a tu proyecto en [Supabase](https://supabase.com/).
 2. Abre el **SQL Editor**.
-3. Copia y pega el contenido de `supabase/schema.sql` (que he creado en este repositorio).
-4. Ejecuta la consulta. Esto creará la tabla `credentials` con las políticas de seguridad necesarias.
+3. Copia y pega el contenido actualizado de `supabase/schema.sql`.
+4. Ejecuta la consulta. Esto:
+   - Añadirá la columna `user_id` si no existe.
+   - Configurará políticas RLS granulares (SELECT, INSERT, UPDATE, DELETE) que aseguran que **solo tú puedas ver y modificar tus propios datos**.
 
 ## 2. Variables de Entorno en Vercel
 
