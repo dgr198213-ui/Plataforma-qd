@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ArrowLeft, Upload, Code, Download, Eye, Plus, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Code, Download, Eye, Plus, RefreshCw } from 'lucide-react';
 import { useCodeStore } from '../../../store/codeStore';
 
 const ProjectsManager = ({ onBack }) => {

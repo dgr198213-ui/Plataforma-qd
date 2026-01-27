@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { SecureStorage } from '../services/SecureStorage';
 import { supabase } from '../lib/supabase';
+import { isUUID } from '../utils/uuid';
 
 const DEFAULT_CREDENTIALS = [
   { id: 'github', name: 'GitHub', icon: 'Github', value: '', configured: false },
@@ -18,23 +19,29 @@ export const useCredentialsStore = create((set, get) => ({
   loadCredentials: async () => {
     set({ isSyncing: true });
     
-    // 1. Intentar cargar de Supabase
-    const { data, error } = await supabase.from('credentials').select('*');
-    
-    if (!error && data && data.length > 0) {
-      const formatted = data.map(c => ({
-        id: c.id,
-        name: c.name,
-        username: c.username,
-        value: SecureStorage.decrypt(c.encrypted_value), // Descifrar localmente
-        category: c.category,
-        notes: c.notes,
-        icon: c.icon,
-        configured: true
-      }));
-      set({ credentials: formatted, isLoaded: true, isSyncing: false });
-    } else {
-      // 2. Fallback a LocalStorage si no hay en Supabase
+    try {
+      // 1. Intentar cargar de Supabase
+      const { data, error } = await supabase.from('credentials').select('*');
+
+      if (!error && data && data.length > 0) {
+        const formatted = data.map(c => ({
+          id: c.id,
+          name: c.name,
+          username: c.username,
+          value: SecureStorage.decrypt(c.encrypted_value), // Descifrar localmente
+          category: c.category,
+          notes: c.notes,
+          icon: c.icon,
+          configured: true
+        }));
+        set({ credentials: formatted, isLoaded: true, isSyncing: false });
+      } else {
+        // Fallback a LocalStorage si no hay en Supabase o no hay sesión
+        const saved = SecureStorage.load();
+        set({ credentials: saved || DEFAULT_CREDENTIALS, isLoaded: true, isSyncing: false });
+      }
+    } catch (error) {
+      console.error('Error loading credentials:', error);
       const saved = SecureStorage.load();
       set({ credentials: saved || DEFAULT_CREDENTIALS, isLoaded: true, isSyncing: false });
     }
@@ -45,28 +52,36 @@ export const useCredentialsStore = create((set, get) => ({
     if (!cred) return;
 
     const encryptedValue = SecureStorage.encrypt(value);
+    const credIsUUID = isUUID(id);
     
-    // Actualizar en Supabase si tiene ID de UUID (ya existe en DB)
-    if (id.length > 20) {
-      await supabase
-        .from('credentials')
-        .update({ encrypted_value: encryptedValue, updated_at: new Date().toISOString() })
-        .eq('id', id);
-    } else {
-      // Crear en Supabase si es una de las por defecto
-      const { data, error } = await supabase
-        .from('credentials')
-        .insert([{
-          name: cred.name,
-          icon: cred.icon,
-          encrypted_value: encryptedValue,
-          category: 'General'
-        }])
-        .select();
-      
-      if (!error && data) {
-        id = data[0].id; // Actualizar ID local con el de DB
+    try {
+      // Actualizar en Supabase si tiene ID de UUID (ya existe en DB)
+      if (credIsUUID) {
+        await supabase
+          .from('credentials')
+          .update({ encrypted_value: encryptedValue, updated_at: new Date().toISOString() })
+          .eq('id', id);
+      } else {
+        // Crear en Supabase si es una de las por defecto y hay sesión activa
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          const { data, error } = await supabase
+            .from('credentials')
+            .insert([{
+              name: cred.name,
+              icon: cred.icon,
+              encrypted_value: encryptedValue,
+              category: 'General'
+            }])
+            .select();
+
+          if (!error && data) {
+            id = data[0].id; // Actualizar ID local con el de DB
+          }
+        }
       }
+    } catch (error) {
+      console.error('Error updating credential in Supabase:', error);
     }
 
     const updated = get().credentials.map(c =>
@@ -82,27 +97,42 @@ export const useCredentialsStore = create((set, get) => ({
   addCredential: async (newCred) => {
     const encryptedValue = SecureStorage.encrypt(newCred.password || newCred.value);
     
-    const { data, error } = await supabase
-      .from('credentials')
-      .insert([{
-        name: newCred.name,
-        username: newCred.username,
-        encrypted_value: encryptedValue,
-        category: newCred.category,
-        notes: newCred.notes,
-        icon: newCred.icon || 'Key'
-      }])
-      .select();
+    try {
+      const { data, error } = await supabase
+        .from('credentials')
+        .insert([{
+          name: newCred.name,
+          username: newCred.username,
+          encrypted_value: encryptedValue,
+          category: newCred.category,
+          notes: newCred.notes,
+          icon: newCred.icon || 'Key'
+        }])
+        .select();
 
-    if (!error && data) {
-      const updated = [...get().credentials, {
-        ...newCred,
-        id: data[0].id,
-        value: newCred.password || newCred.value,
-        configured: true
-      }];
-      set({ credentials: updated });
-      SecureStorage.save(updated);
+      if (!error && data) {
+        const updated = [...get().credentials, {
+          ...newCred,
+          id: data[0].id,
+          value: newCred.password || newCred.value,
+          configured: true
+        }];
+        set({ credentials: updated });
+        SecureStorage.save(updated);
+      } else {
+        // Si no se puede en Supabase, guardar localmente con un ID temporal
+        const tempId = `local-${Date.now()}`;
+        const updated = [...get().credentials, {
+          ...newCred,
+          id: tempId,
+          value: newCred.password || newCred.value,
+          configured: true
+        }];
+        set({ credentials: updated });
+        SecureStorage.save(updated);
+      }
+    } catch (error) {
+      console.error('Error adding credential:', error);
     }
   },
 

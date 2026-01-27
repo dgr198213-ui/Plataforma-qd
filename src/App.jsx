@@ -1,9 +1,11 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { ErrorBoundary } from './core/components/ErrorBoundary';
 import LoadingScreen from './core/components/LoadingScreen';
 import BottomNav from './components/shared/BottomNav';
 import { DocumentTitle } from './core/hooks/useDocumentTitle';
 import PWAInstallPrompt from './components/shared/PWAInstallPrompt';
+import Login from './components/shared/Login';
+import { useAuthStore } from './store/authStore';
 
 // Dashboard se carga inmediatamente
 import Dashboard from './components/shared/Dashboard';
@@ -71,6 +73,14 @@ const MODULE_CONFIG = {
 export default function App() {
   const [currentModule, setCurrentModule] = useState(MODULES.DASHBOARD);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const { user, initialize, loading } = useAuthStore();
+  const isSupabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  useEffect(() => {
+    if (isSupabaseConfigured) {
+      initialize();
+    }
+  }, [initialize, isSupabaseConfigured]);
 
   const config = MODULE_CONFIG[currentModule];
   const Component = config.component;
@@ -87,22 +97,30 @@ export default function App() {
 
   const handleBack = () => handleNavigate(MODULES.DASHBOARD);
 
+  if (loading && isSupabaseConfigured) return <LoadingScreen />;
+
   return (
     <ErrorBoundary>
       <div className={`bg-[#10221f] min-h-screen ${config.fullscreen ? 'h-screen overflow-hidden' : ''}`}>
         <DocumentTitle title={config.title} />
 
         <div className={`transition-opacity duration-150 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-          <Suspense fallback={<LoadingScreen />}>
-            {currentModule === MODULES.DASHBOARD ? (
-              <Component onNavigate={handleNavigate} />
-            ) : (
-              <Component onBack={handleBack} />
-            )}
-          </Suspense>
+          {!user && isSupabaseConfigured ? (
+            <div className="flex items-center justify-center min-h-screen p-4">
+              <Login />
+            </div>
+          ) : (
+            <Suspense fallback={<LoadingScreen />}>
+              {currentModule === MODULES.DASHBOARD ? (
+                <Component onNavigate={handleNavigate} />
+              ) : (
+                <Component onBack={handleBack} />
+              )}
+            </Suspense>
+          )}
         </div>
 
-        {config.showBottomNav && (
+        {config.showBottomNav && (user || !isSupabaseConfigured) && (
           <BottomNav
             currentModule={currentModule}
             onNavigate={handleNavigate}

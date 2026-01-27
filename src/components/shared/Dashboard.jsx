@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap } from 'lucide-react';
+import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap, LogOut } from 'lucide-react';
 import { MODULES } from '../../constants/modules';
 import SystemHealth from './SystemHealth';
+import { useAuthStore } from '../../store/authStore';
 
 const ModuleCard = ({ icon, title, description, color, onClick }) => {
   const colors = {
@@ -32,6 +33,7 @@ const ModuleCard = ({ icon, title, description, color, onClick }) => {
 
 const Dashboard = ({ onNavigate }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { user, signOut } = useAuthStore();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -51,9 +53,26 @@ const Dashboard = ({ onNavigate }) => {
               <div className="text-sm text-white/60">{currentTime.toLocaleTimeString()}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-[#13ecc8]/10 px-3 py-1 rounded-full border border-[#13ecc8]/20">
-            <div className="w-2 h-2 rounded-full bg-[#13ecc8] animate-pulse"></div>
-            <span className="text-xs text-[#13ecc8] font-bold">SISTEMA ACTIVO</span>
+          <div className="flex items-center gap-4">
+            {user && (
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Usuario</span>
+                <span className="text-xs text-white/80">{user.email}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2 bg-[#13ecc8]/10 px-3 py-1 rounded-full border border-[#13ecc8]/20">
+              <div className="w-2 h-2 rounded-full bg-[#13ecc8] animate-pulse"></div>
+              <span className="text-xs text-[#13ecc8] font-bold">SISTEMA ACTIVO</span>
+            </div>
+            {user && (
+              <button
+                onClick={signOut}
+                className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                title="Cerrar Sesión"
+              >
+                <LogOut size={18} />
+              </button>
+            )}
           </div>
         </div>
       </div>

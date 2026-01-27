@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Activity, Shield, Key, Database, Cpu } from 'lucide-react';
+import { Activity, Shield, Key, Database, Cloud, Cpu } from 'lucide-react';
 import { useCodeStore } from '../../store/codeStore';
+import { supabase } from '../../lib/supabase';
 
 const HealthItem = ({ icon: Icon, label, status, detail }) => (
   <div className="flex items-center gap-3 p-3 bg-[#0d1117] rounded-lg border border-white/5">
@@ -24,19 +25,18 @@ const SystemHealth = () => {
     store: { status: 'loading', detail: 'Iniciando...' },
     encryption: { status: 'loading', detail: 'Verificando llaves...' },
     storage: { status: 'loading', detail: 'Probando persistencia...' },
+    supabase: { status: 'loading', detail: 'Conectando con la nube...' },
     monaco: { status: 'loading', detail: 'Cargando motor...' }
   });
 
   const { isLoaded } = useCodeStore();
 
   useEffect(() => {
-    const checkHealth = () => {
-      // 1. Store Check (useCodeStore always exists if imported)
-
-      // 2. Encryption Check
+    const checkHealth = async () => {
+      // 1. Encryption Check
       const hasKey = import.meta.env.VITE_ENCRYPTION_KEY && import.meta.env.VITE_ENCRYPTION_KEY !== 'your-secret-key-here';
 
-      // 3. Storage Check
+      // 2. Storage Check
       let storageOk = false;
       try {
         localStorage.setItem('health-check', 'test');
@@ -46,8 +46,20 @@ const SystemHealth = () => {
         storageOk = false;
       }
 
-      // 4. Monaco (Check if it exists in node_modules or window)
-      // Since it's a lazy load, we just check if the lib is defined
+      // 3. Supabase Check
+      let supabaseStatus = 'warn';
+      let supabaseDetail = 'No configurado';
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (import.meta.env.VITE_SUPABASE_URL) {
+          supabaseStatus = 'ok';
+          supabaseDetail = session ? `Conectado como ${session.user.email}` : 'Conectado (Sesión Invitado)';
+        }
+      } catch (e) {
+        supabaseStatus = 'error';
+        supabaseDetail = 'Error de conexión';
+      }
 
       setHealth({
         store: {
@@ -61,6 +73,10 @@ const SystemHealth = () => {
         storage: {
           status: storageOk ? 'ok' : 'warn',
           detail: storageOk ? 'LocalStorage disponible' : 'Error de persistencia'
+        },
+        supabase: {
+          status: supabaseStatus,
+          detail: supabaseDetail
         },
         monaco: {
           status: 'ok',
@@ -88,22 +104,28 @@ const SystemHealth = () => {
           detail={health.store.detail}
         />
         <HealthItem
+          icon={Cloud}
+          label="Supabase Cloud"
+          status={health.supabase.status}
+          detail={health.supabase.detail}
+        />
+        <HealthItem
           icon={Key}
           label="Cifrado AES"
           status={health.encryption.status}
           detail={health.encryption.detail}
         />
         <HealthItem
-          icon={Cpu}
-          label="Monaco Engine"
-          status={health.monaco.status}
-          detail={health.monaco.detail}
-        />
-        <HealthItem
           icon={Shield}
           label="Persistencia"
           status={health.storage.status}
           detail={health.storage.detail}
+        />
+        <HealthItem
+          icon={Cpu}
+          label="Monaco Engine"
+          status={health.monaco.status}
+          detail={health.monaco.detail}
         />
       </div>
     </div>
