@@ -1,10 +1,32 @@
--- Esquema Seguro para Howard OS / Plataforma-qd
--- Este esquema vincula los datos a cada usuario de Supabase Auth para máxima seguridad.
+-- Esquema Idempotente y Seguro para Howard OS / Plataforma-qd
+-- Este script se puede ejecutar varias veces sin causar errores.
 
--- 1. Tabla de Credenciales
+-- 1. Limpieza de políticas previas para evitar errores de "already exists"
+DO $$ 
+BEGIN
+    -- Tabla credentials
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'credentials' AND schemaname = 'public') THEN
+        DROP POLICY IF EXISTS "Usuarios pueden ver sus propias credenciales" ON public.credentials;
+        DROP POLICY IF EXISTS "Usuarios pueden insertar sus propias credenciales" ON public.credentials;
+        DROP POLICY IF EXISTS "Usuarios pueden actualizar sus propias credenciales" ON public.credentials;
+        DROP POLICY IF EXISTS "Usuarios pueden eliminar sus propias credenciales" ON public.credentials;
+        DROP POLICY IF EXISTS "Permitir todo a usuarios autenticados" ON public.credentials;
+    END IF;
+
+    -- Tabla projects
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'projects' AND schemaname = 'public') THEN
+        DROP POLICY IF EXISTS "Usuarios pueden ver sus propios proyectos" ON public.projects;
+        DROP POLICY IF EXISTS "Usuarios pueden insertar sus propios proyectos" ON public.projects;
+        DROP POLICY IF EXISTS "Usuarios pueden actualizar sus propios proyectos" ON public.projects;
+        DROP POLICY IF EXISTS "Usuarios pueden eliminar sus propios proyectos" ON public.projects;
+        DROP POLICY IF EXISTS "Permitir todo en proyectos a usuarios autenticados" ON public.projects;
+    END IF;
+END $$;
+
+-- 2. Creación/Actualización de la Tabla de Credenciales
 CREATE TABLE IF NOT EXISTS public.credentials (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID DEFAULT auth.uid() NOT NULL, -- Vinculado al usuario autenticado
+    user_id UUID DEFAULT auth.uid() NOT NULL,
     name TEXT NOT NULL,
     username TEXT,
     encrypted_value TEXT NOT NULL,
@@ -18,36 +40,17 @@ CREATE TABLE IF NOT EXISTS public.credentials (
 -- Habilitar RLS
 ALTER TABLE public.credentials ENABLE ROW LEVEL SECURITY;
 
--- Eliminar políticas antiguas si existen
-DROP POLICY IF EXISTS "Permitir todo a usuarios autenticados" ON public.credentials;
-
--- Políticas Seguras (Solo el dueño puede ver/editar sus propios datos)
-CREATE POLICY "Usuarios pueden ver sus propias credenciales" 
-ON public.credentials FOR SELECT 
-TO authenticated 
-USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden insertar sus propias credenciales" 
-ON public.credentials FOR INSERT 
-TO authenticated 
-WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden actualizar sus propias credenciales" 
-ON public.credentials FOR UPDATE 
-TO authenticated 
-USING (auth.uid() = user_id)
-WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden eliminar sus propias credenciales" 
-ON public.credentials FOR DELETE 
-TO authenticated 
-USING (auth.uid() = user_id);
+-- Aplicar Políticas Seguras
+CREATE POLICY "Usuarios pueden ver sus propias credenciales" ON public.credentials FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden insertar sus propias credenciales" ON public.credentials FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden actualizar sus propias credenciales" ON public.credentials FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden eliminar sus propias credenciales" ON public.credentials FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
 
--- 2. Tabla de Proyectos
+-- 3. Creación/Actualización de la Tabla de Proyectos
 CREATE TABLE IF NOT EXISTS public.projects (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID DEFAULT auth.uid() NOT NULL, -- Vinculado al usuario autenticado
+    user_id UUID DEFAULT auth.uid() NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     files JSONB DEFAULT '[]'::jsonb,
@@ -58,27 +61,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
 -- Habilitar RLS
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
--- Eliminar políticas antiguas si existen
-DROP POLICY IF EXISTS "Permitir todo en proyectos a usuarios autenticados" ON public.projects;
-
--- Políticas Seguras para Proyectos
-CREATE POLICY "Usuarios pueden ver sus propios proyectos" 
-ON public.projects FOR SELECT 
-TO authenticated 
-USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden insertar sus propios proyectos" 
-ON public.projects FOR INSERT 
-TO authenticated 
-WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden actualizar sus propios proyectos" 
-ON public.projects FOR UPDATE 
-TO authenticated 
-USING (auth.uid() = user_id)
-WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuarios pueden eliminar sus propios proyectos" 
-ON public.projects FOR DELETE 
-TO authenticated 
-USING (auth.uid() = user_id);
+-- Aplicar Políticas Seguras
+CREATE POLICY "Usuarios pueden ver sus propios proyectos" ON public.projects FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden insertar sus propios proyectos" ON public.projects FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden actualizar sus propios proyectos" ON public.projects FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Usuarios pueden eliminar sus propios proyectos" ON public.projects FOR DELETE TO authenticated USING (auth.uid() = user_id);
