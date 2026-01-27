@@ -7,7 +7,19 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('⚠️ Supabase URL o Anon Key no encontradas en las variables de entorno. La persistencia en la nube estará desactivada.');
 }
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-);
+// Inicialización segura de Supabase
+export const supabase = (supabaseUrl && supabaseAnonKey) 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : {
+      from: () => ({
+        select: () => Promise.resolve({ data: [], error: { message: 'Supabase no configurado' } }),
+        insert: () => Promise.resolve({ data: [], error: { message: 'Supabase no configurado' } }),
+        update: () => Promise.resolve({ data: [], error: { message: 'Supabase no configurado' } }),
+        delete: () => Promise.resolve({ data: [], error: { message: 'Supabase no configurado' } }),
+        eq: () => ({ eq: () => {} })
+      }),
+      auth: {
+        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+      }
+    };
