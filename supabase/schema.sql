@@ -1,34 +1,34 @@
 -- Esquema Idempotente y Seguro para Howard OS / Plataforma-qd
 -- Este script se puede ejecutar varias veces sin causar errores.
 
--- 1. Limpieza de políticas previas para evitar errores de "already exists"
+-- 1. Limpieza de políticas previas (Idempotencia robusta)
+-- Este bloque busca y elimina cualquier política con los nombres que usamos, sin importar la tabla.
 DO $$ 
+DECLARE
+    pol RECORD;
 BEGIN
-    -- Tabla credentials
-    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'credentials' AND schemaname = 'public') THEN
-        DROP POLICY IF EXISTS "Usuarios pueden ver sus propias credenciales" ON public.credentials;
-        DROP POLICY IF EXISTS "Usuarios pueden insertar sus propias credenciales" ON public.credentials;
-        DROP POLICY IF EXISTS "Usuarios pueden actualizar sus propias credenciales" ON public.credentials;
-        DROP POLICY IF EXISTS "Usuarios pueden eliminar sus propias credenciales" ON public.credentials;
-        DROP POLICY IF EXISTS "Permitir todo a usuarios autenticados" ON public.credentials;
-    END IF;
-
-    -- Tabla projects
-    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'projects' AND schemaname = 'public') THEN
-        DROP POLICY IF EXISTS "Usuarios pueden ver sus propios proyectos" ON public.projects;
-        DROP POLICY IF EXISTS "Usuarios pueden insertar sus propios proyectos" ON public.projects;
-        DROP POLICY IF EXISTS "Usuarios pueden actualizar sus propios proyectos" ON public.projects;
-        DROP POLICY IF EXISTS "Usuarios pueden eliminar sus propios proyectos" ON public.projects;
-        DROP POLICY IF EXISTS "Permitir todo en proyectos a usuarios autenticados" ON public.projects;
-    END IF;
-
-    -- Tabla files
-    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'files' AND schemaname = 'public') THEN
-        DROP POLICY IF EXISTS "Usuarios pueden ver archivos de sus proyectos" ON public.files;
-        DROP POLICY IF EXISTS "Usuarios pueden insertar archivos en sus proyectos" ON public.files;
-        DROP POLICY IF EXISTS "Usuarios pueden actualizar archivos de sus proyectos" ON public.files;
-        DROP POLICY IF EXISTS "Usuarios pueden eliminar archivos de sus proyectos" ON public.files;
-    END IF;
+    FOR pol IN
+        SELECT policyname, tablename
+        FROM pg_policies
+        WHERE schemaname = 'public' AND policyname IN (
+            'Usuarios pueden ver sus propias credenciales',
+            'Usuarios pueden insertar sus propias credenciales',
+            'Usuarios pueden actualizar sus propias credenciales',
+            'Usuarios pueden eliminar sus propias credenciales',
+            'Permitir todo a usuarios autenticados',
+            'Usuarios pueden ver sus propios proyectos',
+            'Usuarios pueden insertar sus propios proyectos',
+            'Usuarios pueden actualizar sus propios proyectos',
+            'Usuarios pueden eliminar sus propios proyectos',
+            'Permitir todo en proyectos a usuarios autenticados',
+            'Usuarios pueden ver archivos de sus proyectos',
+            'Usuarios pueden insertar archivos en sus proyectos',
+            'Usuarios pueden actualizar archivos de sus proyectos',
+            'Usuarios pueden eliminar archivos de sus proyectos'
+        )
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', pol.policyname, pol.tablename);
+    END LOOP;
 END $$;
 
 -- 2. Creación/Actualización de la Tabla de Credenciales
