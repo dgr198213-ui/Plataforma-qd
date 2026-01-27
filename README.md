@@ -1,104 +1,148 @@
 # 🚀 Howard OS - Plataforma de Desarrollo Avanzada
 
-**Howard OS** es un entorno de desarrollo integrado (IDE) modular y profesional construido con React, Vite y Tailwind CSS. Esta versión incluye una refactorización profunda de la arquitectura técnica y nuevas herramientas de productividad diseñadas para ingenieros de software.
+<div align="center">
+
+![Howard OS](https://img.shields.io/badge/Howard%20OS-v1.0.0-13ecc8?style=for-the-badge&logo=react&logoColor=white)
+![PWA Ready](https://img.shields.io/badge/PWA-Ready-success?style=for-the-badge&logo=pwa&logoColor=white)
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+
+**IDE modular y profesional construido con React, Vite y Tailwind CSS.**  
+Ahora como **Progressive Web App (PWA)** instalable en móviles y desktop.
+
+</div>
+
+---
+
+## 📱 Instalación como App (PWA)
+
+### Android (Chrome)
+1. Abre la app en Chrome
+2. Toca el banner "Instalar Howard OS" o ve a **⋮ → Instalar app**
+3. Confirma la instalación
+
+### iOS (Safari)
+1. Abre la app en Safari
+2. Toca el botón **Compartir** (⬆️)
+3. Selecciona **"Añadir a pantalla de inicio"**
+4. Toca **"Añadir"**
+
+### Desktop (Chrome/Edge)
+1. Abre la app en el navegador
+2. Haz clic en el icono de instalación en la barra de direcciones
+3. O usa el banner de instalación que aparece automáticamente
 
 ---
 
 ## 📋 Tabla de Contenidos
 
-- [Arquitectura Técnica (Refactorizada)](#-arquitectura-técnica-refactorizada)
 - [Características Principales](#-características-principales)
+- [Instalación Rápida](#-instalación-rápida)
 - [Módulos Disponibles](#-módulos-disponibles)
-- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-- [Instalación Rápida (Recomendado)](#-instalación-rápida-recomendado)
-- [Instalación Manual](#-instalación-manual)
+- [Arquitectura Técnica](#-arquitectura-técnica)
 - [Atajos de Teclado](#-atajos-de-teclado)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Roadmap](#-roadmap)
-
----
-
-## 🛠️ Arquitectura Técnica (Refactorizada)
-
-### Gestión de Estado con Zustand + Immer
-El sistema utiliza **Zustand** para la gestión de estado global, optimizado con:
-- **Immer Middleware**: Permite mutaciones de estado inmutables de forma sencilla y legible.
-- **Devtools**: Integración completa con Redux DevTools para depuración en tiempo real.
-- **Persistencia Selectiva**: Sincronización automática de archivos y configuraciones con `localStorage`.
-
-### Editor de Código Profesional
-Basado en **Monaco Editor**, ahora potenciado con herramientas personalizadas:
-- **Command Palette (Ctrl+P)**: Acceso rápido a comandos del sistema y búsqueda de archivos.
-- **Búsqueda Global (Ctrl+Shift+F)**: Motor de búsqueda indexado en todos los archivos del proyecto.
-- **Diff Viewer**: Comparador de cambios en tiempo real para visualizar modificaciones antes de guardar.
-- **Minimap Personalizado**: Navegación visual rápida a través del código fuente.
-- **Terminal Integrada**: Salida de ejecución y logs del sistema.
+- [Tecnologías](#-tecnologías)
+- [PWA Features](#-pwa-features)
 
 ---
 
 ## ✨ Características Principales
 
-- **IDE Modular Completo**: Editor de código con Monaco Editor (motor de VS Code).
-- **Ejecución en Tiempo Real**: Ejecuta código JavaScript/JSX directamente en el navegador.
-- **Vista Previa en Vivo**: Visualiza cambios en tiempo real con LivePreview.
-- **Panel Git**: Gestión de control de versiones integrada.
-- **Gestión de Credenciales**: Almacenamiento seguro con cifrado AES-256.
-- **Módulos de Análisis**: Bias Firewall, Hype Detector, SolveIt Iterator.
+| Feature | Descripción |
+|---------|-------------|
+| 📱 **PWA Instalable** | Funciona como app nativa en móvil y desktop |
+| 🔌 **Funciona Offline** | Cache inteligente de archivos estáticos |
+| 💻 **IDE Completo** | Editor Monaco (motor de VS Code) |
+| 🔄 **Git Integrado** | Stage, commit, branches sin salir de la app |
+| 🔐 **Cifrado AES-256** | Almacenamiento seguro de credenciales |
+| ⚡ **Ejecución en Vivo** | Ejecuta JavaScript/JSX en el navegador |
+| 🎨 **Vista Previa** | LivePreview con responsive modes |
+| 🔍 **Búsqueda Global** | Busca en todos los archivos del proyecto |
+| 📊 **System Health** | Monitoreo en tiempo real del sistema |
 
 ---
 
-## 🚀 Instalación Rápida (Recomendado)
-
-Para una configuración automática que genera claves de cifrado y estructura de directorios:
+## 🚀 Instalación Rápida
 
 ```bash
+# Clonar el repositorio
 git clone https://github.com/dgr198213-ui/Plataforma-qd.git
 cd Plataforma-qd
-npm install
-npm run setup
-npm run dev
-```
 
-O usa el comando de inicio rápido:
-```bash
+# Instalar dependencias
+npm install
+
+# Configuración automática + iniciar
 npm run dev:quick
 ```
 
----
+O paso a paso:
 
-## 🛠️ Instalación Manual
-
-### 1. Clonar y Preparar
 ```bash
-git clone https://github.com/dgr198213-ui/Plataforma-qd.git
-cd Plataforma-qd
-npm install
+npm run setup    # Genera .env y estructura
+npm run dev      # Inicia servidor de desarrollo
 ```
 
-### 2. Configurar Variables de Entorno
-```bash
-cp .env.example .env
-# Generar clave de cifrado para seguridad local
-openssl rand -base64 32
-```
-
-### 3. Ejecución
-```bash
-npm run dev
-```
-La aplicación estará disponible en: **http://localhost:5173**
+La app estará disponible en: **http://localhost:5173**
 
 ---
 
-## ⌨️ Atajos de Teclado (Nuevos)
+## 📦 Módulos Disponibles
+
+### Desarrollo & Herramientas
+
+| Módulo | Descripción | Estado |
+|--------|-------------|--------|
+| 🔑 **Credenciales** | Gestiona APIs, tokens y accesos con cifrado AES-256 | ✅ Activo |
+| 💻 **Editor de Código** | IDE completo con Monaco Editor + Terminal | ✅ Activo |
+| 💬 **No-Code Chat** | Desarrollo por conversación con IA | 🔶 Mock |
+| 🔗 **Conectores** | Integración con GitHub, APIs y servicios | 🔶 Mock |
+| 📁 **Proyectos** | Gestión completa de archivos y proyectos | ✅ Activo |
+
+### Análisis & Auditoría
+
+| Módulo | Descripción | Estado |
+|--------|-------------|--------|
+| 🛡️ **Bias Firewall** | Auditoría de sesgos en tiempo real | 🔶 Mock |
+| 📡 **Hype Detector** | Filtra ruido de señal en noticias | 🔶 Mock |
+| ⚡ **SolveIt Iterator** | Gestión iterativa pragmática | 🔶 Mock |
+
+---
+
+## 🛠️ Arquitectura Técnica
+
+### Gestión de Estado
+```
+Zustand + Immer + Persist
+├── codeStore.js      → Archivos, Git, Terminal, Snippets
+└── credentialsStore.js → APIs, Tokens (cifrado AES-256)
+```
+
+### Editor de Código
+- **Monaco Editor** - Motor de VS Code
+- **Command Palette** - Ctrl+P
+- **Global Search** - Ctrl+Shift+F
+- **Diff Viewer** - Comparador de cambios
+- **Minimap** - Navegación visual
+- **Terminal** - Salida de ejecución
+
+### Sistema Git Local
+- Stage/Unstage archivos
+- Commits con mensaje
+- Crear/cambiar branches
+- Historial de commits
+
+---
+
+## ⌨️ Atajos de Teclado
 
 | Atajo | Acción |
 |-------|--------|
-| `Ctrl + P` | Abrir Command Palette |
+| `Ctrl + P` | Command Palette |
 | `Ctrl + Shift + F` | Búsqueda Global |
-| `Ctrl + S` | Guardar Archivo Actual |
-| `Ctrl + J` | Alternar Terminal |
-| `Esc` | Cerrar Modales / Paneles |
+| `Ctrl + S` | Guardar archivo |
+| `Escape` | Cerrar modal/panel |
 
 ---
 
@@ -106,33 +150,52 @@ La aplicación estará disponible en: **http://localhost:5173**
 
 ```
 Plataforma-qd/
-├── scripts/
-│   ├── setup.cjs            # Script de configuración automática
-│   └── import-credentials.cjs # Script de importación
+├── public/
+│   ├── manifest.json          # Configuración PWA
+│   └── icons/                 # Iconos de la app
+│       ├── icon.svg
+│       └── icon-*.png
 ├── src/
 │   ├── components/
 │   │   ├── modules/
-│   │   │   ├── credentials/
-│   │   │   │   └── components/
-│   │   │   │       └── AutoCredentialManager.jsx # Nuevo asistente visual
-│   │   │   ├── development/
-│   │   │   │   ├── CodeEditor/
-│   │   │   │   │   └── ...
+│   │   │   ├── analysis/      # Bias, Hype, SolveIt
+│   │   │   ├── credentials/   # Gestión de credenciales
+│   │   │   ├── development/   # CodeEditor, NoCodeChat
+│   │   │   └── projects/      # Gestión de proyectos
+│   │   └── shared/
+│   │       ├── Dashboard.jsx
+│   │       ├── BottomNav.jsx
+│   │       ├── SystemHealth.jsx
+│   │       └── PWAInstallPrompt.jsx
 │   ├── store/
-│   │   ├── codeStore.js
+│   │   ├── codeStore.js       # Estado del editor
 │   │   └── credentialsStore.js
+│   ├── services/
+│   │   └── SecureStorage.js   # Cifrado AES-256
 │   └── App.jsx
+├── scripts/
+│   ├── setup.cjs
+│   └── import-credentials.cjs
+├── vite.config.js             # Configuración Vite + PWA
+├── package.json
 └── README.md
 ```
 
 ---
 
-## 🎯 Roadmap
+## 🔧 Tecnologías
 
-- [ ] **Backend Seguro**: Migración de lógica de cifrado a un servidor Node.js dedicado.
-- [ ] **AI Assistant**: Integración nativa con Claude API para asistencia en código.
-- [ ] **PWA**: Soporte completo para funcionamiento offline e instalación.
-- [ ] **Colaboración**: Trabajo en tiempo real con WebSockets.
+| Categoría | Tecnología |
+|-----------|------------|
+| **Framework** | React 18.2 |
+| **Build Tool** | Vite 5.2 |
+| **Estilos** | Tailwind CSS 3.4 |
+| **Estado** | Zustand 5 + Immer |
+| **Editor** | Monaco Editor 4.7 |
+| **Cifrado** | CryptoJS (AES-256) |
+| **PWA** | vite-plugin-pwa + Workbox |
+| **Testing** | Vitest + React Testing Library |
+| **Iconos** | Lucide React |
 
 ---
 Desarrollado con ❤️ para la comunidad de ingeniería de Howard OS.

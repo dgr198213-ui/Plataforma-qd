@@ -3,6 +3,7 @@ import { ErrorBoundary } from './core/components/ErrorBoundary';
 import LoadingScreen from './core/components/LoadingScreen';
 import BottomNav from './components/shared/BottomNav';
 import { DocumentTitle } from './core/hooks/useDocumentTitle';
+import PWAInstallPrompt from './components/shared/PWAInstallPrompt';
 
 // Dashboard se carga inmediatamente
 import Dashboard from './components/shared/Dashboard';
@@ -107,6 +108,9 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         )}
+
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
       </div>
     </ErrorBoundary>
   );
