@@ -20,6 +20,7 @@ const ProjectsManager = lazy(() => import('./components/modules/projects/Project
 const BiasFirewall = lazy(() => import('./components/modules/analysis/BiasFirewall'));
 const HypeDetector = lazy(() => import('./components/modules/analysis/HypeDetector'));
 const SolveItIterator = lazy(() => import('./components/modules/analysis/SolveItIterator'));
+const MoltbotPanel = lazy(() => import('./components/modules/development/MoltbotPanel'));
 
 const MODULE_CONFIG = {
   [MODULES.DASHBOARD]: {
@@ -67,6 +68,11 @@ const MODULE_CONFIG = {
     component: SolveItIterator,
     showBottomNav: false,
     title: 'SolveIt Iterator'
+  },
+  [MODULES.MOLTBOT]: {
+    component: MoltbotPanel,
+    showBottomNav: true,
+    title: 'Moltbot Gateway'
   }
 };
 
