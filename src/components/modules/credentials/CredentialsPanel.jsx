@@ -69,7 +69,7 @@ const CredentialsPanel = ({ onBack }) => {
             <div>
               <p className="text-sm font-bold text-white mb-1">Seguridad de Credenciales</p>
               <p className="text-xs text-gray-400">
-                Cifrado AES-256 • Almacenamiento local • Sin transferencia a servidores
+                Cifrado AES-256 • {import.meta.env.VITE_SUPABASE_URL ? 'Sincronización en la nube activa' : 'Almacenamiento local (Solo dispositivo)'}
               </p>
             </div>
           </div>

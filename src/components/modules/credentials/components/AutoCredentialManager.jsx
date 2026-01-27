@@ -151,7 +151,7 @@ const AutoCredentialManager = () => {
       <div className="mt-6 p-3 bg-blue-500/5 border border-blue-500/10 rounded-lg flex gap-3">
         <AlertCircle size={16} className="text-blue-400 shrink-0" />
         <p className="text-[10px] text-blue-300/80 leading-relaxed">
-          <strong>Nota de Seguridad:</strong> Las credenciales importadas se cifran localmente usando la clave definida en tu archivo <code>.env</code>. Nunca se envían a servidores externos.
+          <strong>Nota de Seguridad:</strong> Las credenciales se cifran localmente antes de {import.meta.env.VITE_SUPABASE_URL ? 'sincronizarse con tu base de datos Supabase privada' : 'guardarse en el almacenamiento local'}.
         </p>
       </div>
     </div>

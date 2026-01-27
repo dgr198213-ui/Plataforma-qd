@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { supabase } from '../lib/supabase';
+import { isUUID } from '../utils/uuid';
 
 /**
  * @typedef {Object} File
@@ -72,55 +73,68 @@ export const useCodeStore = create(
         
         fetchProjects: async () => {
           set({ isSyncing: true });
-          const { data, error } = await supabase.from('projects').select('*');
-          if (!error && data) {
-            set({ projects: data, isSyncing: false });
-            if (data.length > 0 && !get().currentProjectId) {
+          try {
+            const { data, error } = await supabase.from('projects').select('*').order('updated_at', { ascending: false });
+            if (error) throw error;
+            set({ projects: data || [], isSyncing: false });
+            if (data?.length > 0 && !get().currentProjectId) {
               get().setCurrentProject(data[0].id);
             }
-          } else {
+          } catch (error) {
+            get().appendTerminalOutput(`\n[ERROR] No se pudieron cargar los proyectos: ${error.message}\n`);
             set({ isSyncing: false });
           }
         },
 
         setCurrentProject: async (projectId) => {
           set({ currentProjectId: projectId, isSyncing: true });
-          const { data, error } = await supabase
-            .from('files')
-            .select('*')
-            .eq('project_id', projectId);
-          
-          if (!error && data) {
-            const formattedFiles = data.map(f => ({
-              id: f.id,
-              name: f.name,
-              path: f.path,
-              language: f.language,
-              content: f.content,
-              originalContent: f.content,
-              saved: true,
-              updatedAt: new Date(f.updated_at).getTime()
-            }));
-            set({ 
-              files: formattedFiles.length > 0 ? formattedFiles : DEFAULT_FILES,
-              openFiles: formattedFiles.length > 0 ? [formattedFiles[0].id] : ['main-js'],
-              currentFileId: formattedFiles.length > 0 ? formattedFiles[0].id : 'main-js',
-              isSyncing: false 
-            });
-          } else {
+          try {
+            const { data, error } = await supabase
+              .from('files')
+              .select('*')
+              .eq('project_id', projectId);
+
+            if (error) throw error;
+
+            if (data) {
+              const formattedFiles = data.map(f => ({
+                id: f.id,
+                name: f.name,
+                path: f.path,
+                language: f.language,
+                content: f.content,
+                originalContent: f.content,
+                saved: true,
+                updatedAt: new Date(f.updated_at).getTime()
+              }));
+              set({
+                files: formattedFiles.length > 0 ? formattedFiles : DEFAULT_FILES,
+                openFiles: formattedFiles.length > 0 ? [formattedFiles[0].id] : ['main-js'],
+                currentFileId: formattedFiles.length > 0 ? formattedFiles[0].id : 'main-js',
+                isSyncing: false
+              });
+            }
+          } catch (error) {
+            get().appendTerminalOutput(`\n[ERROR] Error al cargar archivos del proyecto: ${error.message}\n`);
             set({ isSyncing: false });
           }
         },
 
         createRemoteProject: async (name, description = '') => {
-          const { data, error } = await supabase
-            .from('projects')
-            .insert([{ name, description }])
-            .select();
-          
-          if (!error && data) {
-            set((state) => { state.projects.push(data[0]); });
-            return data[0].id;
+          try {
+            const { data, error } = await supabase
+              .from('projects')
+              .insert([{ name, description }])
+              .select();
+
+            if (error) throw error;
+            if (data) {
+              set((state) => { state.projects.unshift(data[0]); });
+              get().appendTerminalOutput(`\n[SUCCESS] Proyecto "${name}" creado en la nube.\n`);
+              return data[0].id;
+            }
+          } catch (error) {
+            get().appendTerminalOutput(`\n[ERROR] No se pudo crear el proyecto: ${error.message}\n`);
           }
           return null;
         },
@@ -135,19 +149,24 @@ export const useCodeStore = create(
           let newFileId = `file-${Date.now()}`;
 
           if (projectId) {
-            const { data, error } = await supabase
-              .from('files')
-              .insert([{ 
-                project_id: projectId, 
-                name, 
-                language, 
-                content,
-                path: `/${name}`
-              }])
-              .select();
-            
-            if (!error && data) {
-              newFileId = data[0].id;
+            try {
+              const { data, error } = await supabase
+                .from('files')
+                .insert([{
+                  project_id: projectId,
+                  name,
+                  language,
+                  content,
+                  path: `/${name}`
+                }])
+                .select();
+
+              if (error) throw error;
+              if (data) {
+                newFileId = data[0].id;
+              }
+            } catch (error) {
+              get().appendTerminalOutput(`\n[ERROR] Error al crear archivo en la nube: ${error.message}\n`);
             }
           }
 
@@ -183,18 +202,53 @@ export const useCodeStore = create(
         },
 
         saveFile: async (id) => {
-          const file = get().files.find(f => f.id === id);
+          let currentId = id;
+          const file = get().files.find(f => f.id === currentId);
           if (!file) return;
 
-          if (get().currentProjectId && !id.startsWith('file-')) {
-            await supabase
-              .from('files')
-              .update({ content: file.content, updated_at: new Date().toISOString() })
-              .eq('id', id);
+          const projectId = get().currentProjectId;
+          const fileIsUUID = isUUID(currentId);
+
+          if (projectId) {
+            try {
+              if (fileIsUUID) {
+                const { error } = await supabase
+                  .from('files')
+                  .update({ content: file.content, updated_at: new Date().toISOString() })
+                  .eq('id', currentId);
+                if (error) throw error;
+              } else {
+                // Es un archivo local (main-js o file-*) en un proyecto remoto -> Sincronizarlo
+                const { data, error } = await supabase
+                  .from('files')
+                  .insert([{
+                    project_id: projectId,
+                    name: file.name,
+                    language: file.language,
+                    content: file.content,
+                    path: file.path
+                  }])
+                  .select();
+
+                if (error) throw error;
+                if (data) {
+                  const remoteId = data[0].id;
+                  set((state) => {
+                    const f = state.files.find(f => f.id === currentId);
+                    if (f) f.id = remoteId;
+                    state.openFiles = state.openFiles.map(fid => fid === currentId ? remoteId : fid);
+                    if (state.currentFileId === currentId) state.currentFileId = remoteId;
+                  });
+                  currentId = remoteId;
+                }
+              }
+            } catch (error) {
+              get().appendTerminalOutput(`\n[ERROR] Error al sincronizar con la nube: ${error.message}\n`);
+            }
           }
 
           set((state) => {
-            const f = state.files.find(f => f.id === id);
+            const f = state.files.find(f => f.id === currentId);
             if (f) {
               f.originalContent = f.content;
               f.saved = true;
@@ -204,8 +258,15 @@ export const useCodeStore = create(
         },
 
         deleteFile: async (id) => {
-          if (get().currentProjectId && !id.startsWith('file-')) {
-            await supabase.from('files').delete().eq('id', id);
+          const fileIsUUID = isUUID(id);
+
+          if (get().currentProjectId && fileIsUUID) {
+            try {
+              const { error } = await supabase.from('files').delete().eq('id', id);
+              if (error) throw error;
+            } catch (error) {
+              get().appendTerminalOutput(`\n[ERROR] No se pudo eliminar de la nube: ${error.message}\n`);
+            }
           }
 
           set((state) => {
