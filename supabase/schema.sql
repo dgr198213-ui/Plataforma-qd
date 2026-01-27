@@ -21,6 +21,14 @@ BEGIN
         DROP POLICY IF EXISTS "Usuarios pueden eliminar sus propios proyectos" ON public.projects;
         DROP POLICY IF EXISTS "Permitir todo en proyectos a usuarios autenticados" ON public.projects;
     END IF;
+
+    -- Tabla files
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE tablename = 'files' AND schemaname = 'public') THEN
+        DROP POLICY IF EXISTS "Usuarios pueden ver archivos de sus proyectos" ON public.files;
+        DROP POLICY IF EXISTS "Usuarios pueden insertar archivos en sus proyectos" ON public.files;
+        DROP POLICY IF EXISTS "Usuarios pueden actualizar archivos de sus proyectos" ON public.files;
+        DROP POLICY IF EXISTS "Usuarios pueden eliminar archivos de sus proyectos" ON public.files;
+    END IF;
 END $$;
 
 -- 2. Creación/Actualización de la Tabla de Credenciales
