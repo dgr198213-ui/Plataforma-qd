@@ -96,8 +96,8 @@ La app estará disponible en: **http://localhost:5173**
 |--------|-------------|--------|
 | 🔑 **Credenciales** | Gestiona APIs, tokens y accesos con cifrado AES-256 | ✅ Activo |
 | 💻 **Editor de Código** | IDE completo con Monaco Editor + Terminal | ✅ Activo |
-| 💬 **No-Code Chat** | Desarrollo por conversación con IA | 🔶 Mock |
-| 🔗 **Conectores** | Integración con GitHub, APIs y servicios | 🔶 Mock |
+| 💬 **No-Code Chat** | Desarrollo por conversación con IA (Claude 3.5) | ✅ Activo |
+| 🔗 **Conectores** | Integración con GitHub, APIs y webhooks | ✅ Activo |
 | 📁 **Proyectos** | Gestión completa de archivos y proyectos | ✅ Activo |
 
 ### Análisis & Auditoría
@@ -192,6 +192,7 @@ Plataforma-qd/
 | **Estilos** | Tailwind CSS 3.4 |
 | **Estado** | Zustand 5 + Immer |
 | **Editor** | Monaco Editor 4.7 |
+| **Integraciones** | Octokit (GitHub API) |
 | **Cifrado** | CryptoJS (AES-256) |
 | **PWA** | vite-plugin-pwa + Workbox |
 | **Testing** | Vitest + React Testing Library |
@@ -206,6 +207,18 @@ Licencia privada para **dgr198213-ui**.
 ## ☁️ Integración con Supabase
 
 Howard OS ahora soporta persistencia real en la nube mediante **Supabase**.
+
+### 🤖 Desarrollo por Conversación (No-Code Chat)
+El módulo **No-Code Chat** integra la potencia de **Claude 3.5 Sonnet** (Anthropic) directamente en tu flujo de trabajo:
+- **Generación Contextual**: La IA conoce los archivos de tu proyecto y el framework que estás usando.
+- **Vista Previa de Código**: Revisa el código generado antes de aplicarlo.
+- **Integración Directa**: Aplica los cambios a cualquier archivo de tu proyecto con un solo clic.
+- **Plantillas**: Atajos para crear formularios, integraciones de API y estados globales instantáneamente.
+
+### 🔗 Sistema de Conectores
+Gestiona integraciones externas de forma modular:
+- **GitHub Connector**: Lista tus repositorios, clónalos directamente al IDE y publica tus cambios (push) con mensajes de commit personalizados.
+- **Extensibilidad**: Arquitectura preparada para Webhooks, REST APIs y bases de datos externas.
 
 ### Configuración Necesaria
 Para habilitar la sincronización, añade las siguientes variables a tu archivo `.env`:
