@@ -66,3 +66,40 @@ CREATE POLICY "Usuarios pueden ver sus propios proyectos" ON public.projects FOR
 CREATE POLICY "Usuarios pueden insertar sus propios proyectos" ON public.projects FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Usuarios pueden actualizar sus propios proyectos" ON public.projects FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Usuarios pueden eliminar sus propios proyectos" ON public.projects FOR DELETE TO authenticated USING (auth.uid() = user_id);
+
+-- 4. Creación de la Tabla de Archivos (Para el CodeEditor)
+CREATE TABLE IF NOT EXISTS public.files (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES public.projects(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    path TEXT NOT NULL,
+    language TEXT NOT NULL,
+    content TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Habilitar RLS en files
+ALTER TABLE public.files ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para files (Basadas en el acceso al proyecto)
+CREATE POLICY "Usuarios pueden ver archivos de sus proyectos" 
+ON public.files FOR SELECT 
+TO authenticated 
+USING (EXISTS (SELECT 1 FROM public.projects WHERE id = files.project_id AND user_id = auth.uid()));
+
+CREATE POLICY "Usuarios pueden insertar archivos en sus proyectos" 
+ON public.files FOR INSERT 
+TO authenticated 
+WITH CHECK (EXISTS (SELECT 1 FROM public.projects WHERE id = files.project_id AND user_id = auth.uid()));
+
+CREATE POLICY "Usuarios pueden actualizar archivos de sus proyectos" 
+ON public.files FOR UPDATE 
+TO authenticated 
+USING (EXISTS (SELECT 1 FROM public.projects WHERE id = files.project_id AND user_id = auth.uid()))
+WITH CHECK (EXISTS (SELECT 1 FROM public.projects WHERE id = files.project_id AND user_id = auth.uid()));
+
+CREATE POLICY "Usuarios pueden eliminar archivos de sus proyectos" 
+ON public.files FOR DELETE 
+TO authenticated 
+USING (EXISTS (SELECT 1 FROM public.projects WHERE id = files.project_id AND user_id = auth.uid()));
