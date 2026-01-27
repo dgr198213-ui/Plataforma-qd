@@ -137,3 +137,22 @@ Plataforma-qd/
 ---
 Desarrollado con ❤️ para la comunidad de ingeniería de Howard OS.
 Licencia privada para **dgr198213-ui**.
+
+---
+
+## ☁️ Integración con Supabase
+
+Howard OS ahora soporta persistencia real en la nube mediante **Supabase**.
+
+### Configuración Necesaria
+Para habilitar la sincronización, añade las siguientes variables a tu archivo `.env`:
+
+```env
+VITE_SUPABASE_URL=tu_url_de_supabase
+VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
+```
+
+### Características de la Integración
+- **Proyectos y Archivos**: Sincronización automática de tu espacio de trabajo.
+- **Credenciales Híbridas**: Las credenciales se cifran localmente con AES-256 antes de subirse a Supabase, garantizando que solo tú puedas descifrarlas.
+- **RLS (Row Level Security)**: Protección de datos a nivel de base de datos.

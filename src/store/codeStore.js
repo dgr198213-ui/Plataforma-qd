@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { supabase } from '../lib/supabase';
 
 /**
  * @typedef {Object} File
@@ -45,23 +46,13 @@ export const useCodeStore = create(
         gitBranches: [
           { name: 'main', current: true, lastCommit: 'abc123' }
         ],
-        projects: [
-          { id: 1, name: 'Landing Page Startup', files: 12, size: '2.4 MB' },
-          { id: 2, name: 'API Backend Node', files: 34, size: '8.1 MB' },
-        ],
-        currentProjectId: 1,
+        projects: [],
+        currentProjectId: null,
 
         // ADDITIONAL STATE
         isLoaded: false,
-        snippets: [
-          {
-            id: 'snip-1',
-            name: 'React Function Component',
-            language: 'javascript',
-            category: 'UI',
-            code: 'const Component = () => {\n  return <div>Component</div>;\n};'
-          }
-        ],
+        isSyncing: false,
+        snippets: [],
 
         // ==================== GETTERS ====================
         getCurrentFile: () => {
@@ -77,81 +68,91 @@ export const useCodeStore = create(
           }));
         },
 
-        getAllSnippets: () => get().snippets || [],
+        // ==================== ACCIONES SUPABASE ====================
+        
+        fetchProjects: async () => {
+          set({ isSyncing: true });
+          const { data, error } = await supabase.from('projects').select('*');
+          if (!error && data) {
+            set({ projects: data, isSyncing: false });
+            if (data.length > 0 && !get().currentProjectId) {
+              get().setCurrentProject(data[0].id);
+            }
+          } else {
+            set({ isSyncing: false });
+          }
+        },
 
-        // ==================== ACCIONES (IMMER) ====================
+        setCurrentProject: async (projectId) => {
+          set({ currentProjectId: projectId, isSyncing: true });
+          const { data, error } = await supabase
+            .from('files')
+            .select('*')
+            .eq('project_id', projectId);
+          
+          if (!error && data) {
+            const formattedFiles = data.map(f => ({
+              id: f.id,
+              name: f.name,
+              path: f.path,
+              language: f.language,
+              content: f.content,
+              originalContent: f.content,
+              saved: true,
+              updatedAt: new Date(f.updated_at).getTime()
+            }));
+            set({ 
+              files: formattedFiles.length > 0 ? formattedFiles : DEFAULT_FILES,
+              openFiles: formattedFiles.length > 0 ? [formattedFiles[0].id] : ['main-js'],
+              currentFileId: formattedFiles.length > 0 ? formattedFiles[0].id : 'main-js',
+              isSyncing: false 
+            });
+          } else {
+            set({ isSyncing: false });
+          }
+        },
+
+        createRemoteProject: async (name, description = '') => {
+          const { data, error } = await supabase
+            .from('projects')
+            .insert([{ name, description }])
+            .select();
+          
+          if (!error && data) {
+            set((state) => { state.projects.push(data[0]); });
+            return data[0].id;
+          }
+          return null;
+        },
+
+        // ==================== ACCIONES LOCALES (IMMER) ====================
         setHasHydrated: (state) => {
           set({ isLoaded: state });
         },
 
-        // GIT ACTIONS
-        stageFile: (fileName) => {
-          set((state) => {
-            const change = state.gitChanges.find(c => c.file === fileName);
-            if (change) {
-              change.staged = !change.staged;
-            } else {
-              // Si no existe en gitChanges pero está en unsavedFiles, lo añadimos
-              state.gitChanges.push({ file: fileName, status: 'modified', staged: true });
+        createFile: async (name, language = 'javascript', content = '') => {
+          const projectId = get().currentProjectId;
+          let newFileId = `file-${Date.now()}`;
+
+          if (projectId) {
+            const { data, error } = await supabase
+              .from('files')
+              .insert([{ 
+                project_id: projectId, 
+                name, 
+                language, 
+                content,
+                path: `/${name}`
+              }])
+              .select();
+            
+            if (!error && data) {
+              newFileId = data[0].id;
             }
-          }, false, 'stageFile');
-        },
+          }
 
-        stageAll: () => {
-          set((state) => {
-            state.gitChanges.forEach(c => c.staged = true);
-            // También podríamos añadir archivos no guardados aquí si quisiéramos ser exhaustivos
-          }, false, 'stageAll');
-        },
-
-        unstageAll: () => {
-          set((state) => {
-            state.gitChanges.forEach(c => c.staged = false);
-          }, false, 'unstageAll');
-        },
-
-        commitChanges: (message) => {
-          set((state) => {
-            const staged = state.gitChanges.filter(c => c.staged);
-            if (staged.length > 0 || state.getUnsavedFiles().length > 0) {
-              state.gitCommits.unshift({
-                hash: Math.random().toString(36).substring(2, 9),
-                message,
-                author: 'Usuario Howard',
-                date: new Date().toLocaleString()
-              });
-              state.gitChanges = state.gitChanges.filter(c => !c.staged);
-              // Al hacer commit, marcamos archivos como guardados (originalContent = content)
-              state.files.forEach(f => {
-                if (!f.saved) {
-                  f.originalContent = f.content;
-                  f.saved = true;
-                }
-              });
-            }
-          }, false, 'commitChanges');
-        },
-
-        checkoutBranch: (branchName) => {
-          set((state) => {
-            state.gitBranches.forEach(b => b.current = b.name === branchName);
-            state.gitStatus.branch = branchName;
-          }, false, 'checkoutBranch');
-        },
-
-        createBranch: (name) => {
-          set((state) => {
-            if (!state.gitBranches.find(b => b.name === name)) {
-              state.gitBranches.push({ name, current: false, lastCommit: 'new' });
-            }
-          }, false, 'createBranch');
-        },
-
-        
-        createFile: (name, language = 'javascript', content = '') => {
-          const id = `file-${Date.now()}`;
           const newFile = {
-            id,
+            id: newFileId,
             name,
             path: `/${name}`,
             language,
@@ -163,11 +164,11 @@ export const useCodeStore = create(
 
           set((state) => {
             state.files.push(newFile);
-            state.openFiles.push(id);
-            state.currentFileId = id;
+            state.openFiles.push(newFileId);
+            state.currentFileId = newFileId;
           }, false, 'createFile');
           
-          return id;
+          return newFileId;
         },
 
         updateFileContent: (id, content) => {
@@ -181,36 +182,32 @@ export const useCodeStore = create(
           }, false, 'updateFileContent');
         },
 
-        saveFile: (id) => {
+        saveFile: async (id) => {
+          const file = get().files.find(f => f.id === id);
+          if (!file) return;
+
+          if (get().currentProjectId && !id.startsWith('file-')) {
+            await supabase
+              .from('files')
+              .update({ content: file.content, updated_at: new Date().toISOString() })
+              .eq('id', id);
+          }
+
           set((state) => {
-            const file = state.files.find(f => f.id === id);
-            if (file) {
-              file.originalContent = file.content;
-              file.saved = true;
-              file.updatedAt = Date.now();
+            const f = state.files.find(f => f.id === id);
+            if (f) {
+              f.originalContent = f.content;
+              f.saved = true;
+              f.updatedAt = Date.now();
             }
           }, false, 'saveFile');
         },
 
-        closeFile: (id) => {
-          set((state) => {
-            state.openFiles = state.openFiles.filter(fid => fid !== id);
-            if (state.currentFileId === id) {
-              state.currentFileId = state.openFiles[state.openFiles.length - 1] || null;
-            }
-          }, false, 'closeFile');
-        },
+        deleteFile: async (id) => {
+          if (get().currentProjectId && !id.startsWith('file-')) {
+            await supabase.from('files').delete().eq('id', id);
+          }
 
-        setActiveFile: (id) => {
-          set((state) => {
-            if (!state.openFiles.includes(id)) {
-              state.openFiles.push(id);
-            }
-            state.currentFileId = id;
-          }, false, 'setActiveFile');
-        },
-
-        deleteFile: (id) => {
           set((state) => {
             state.files = state.files.filter(f => f.id !== id);
             state.openFiles = state.openFiles.filter(fid => fid !== id);
@@ -220,31 +217,50 @@ export const useCodeStore = create(
           }, false, 'deleteFile');
         },
 
-        appendTerminalOutput: (text) => {
+        // GIT ACTIONS (Simplificadas para el ejemplo)
+        stageFile: (fileName) => {
           set((state) => {
-            state.terminalOutput += text;
-          }, false, 'appendTerminalOutput');
+            const change = state.gitChanges.find(c => c.file === fileName);
+            if (change) change.staged = !change.staged;
+            else state.gitChanges.push({ file: fileName, status: 'modified', staged: true });
+          }, false, 'stageFile');
+        },
+
+        commitChanges: (message) => {
+          set((state) => {
+            state.gitCommits.unshift({
+              hash: Math.random().toString(36).substring(2, 9),
+              message,
+              author: 'Usuario Howard',
+              date: new Date().toLocaleString()
+            });
+            state.gitChanges = [];
+            state.files.forEach(f => {
+              f.originalContent = f.content;
+              f.saved = true;
+            });
+          }, false, 'commitChanges');
+        },
+
+        appendTerminalOutput: (text) => {
+          set((state) => { state.terminalOutput += text; }, false, 'appendTerminalOutput');
         },
 
         clearTerminal: () => {
-          set((state) => {
-            state.terminalOutput = '> Terminal limpia.\n';
-          }, false, 'clearTerminal');
+          set((state) => { state.terminalOutput = '> Terminal limpia.\n'; }, false, 'clearTerminal');
         }
       })),
       {
         name: 'howard-os-storage',
         partialize: (state) => ({
-          files: state.files,
           settings: state.settings,
-          gitCommits: state.gitCommits,
-          gitBranches: state.gitBranches,
-          snippets: state.snippets,
-          projects: state.projects,
           currentProjectId: state.currentProjectId
         }),
         onRehydrateStorage: () => (state) => {
           state?.setHasHydrated?.(true);
+          if (state?.currentProjectId) {
+            state.fetchProjects();
+          }
         }
       }
     ),
