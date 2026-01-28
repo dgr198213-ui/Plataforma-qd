@@ -26,6 +26,7 @@ const SystemHealth = () => {
     encryption: { status: 'loading', detail: 'Verificando llaves...' },
     storage: { status: 'loading', detail: 'Probando persistencia...' },
     supabase: { status: 'loading', detail: 'Conectando con la nube...' },
+    moltbot: { status: 'loading', detail: 'Buscando gateway...' },
     monaco: { status: 'loading', detail: 'Cargando motor...' }
   });
 
@@ -61,6 +62,28 @@ const SystemHealth = () => {
         supabaseDetail = 'Error de conexión';
       }
 
+      // 4. Moltbot Check
+      let moltbotStatus = 'warn';
+      let moltbotDetail = 'Offline';
+
+      try {
+        const probe = new WebSocket('ws://127.0.0.1:18789');
+        await new Promise((resolve, reject) => {
+          probe.onopen = () => {
+            moltbotStatus = 'ok';
+            moltbotDetail = 'Gateway Activo';
+            probe.close();
+            resolve();
+          };
+          probe.onerror = () => {
+            reject();
+          };
+          setTimeout(reject, 500);
+        });
+      } catch (e) {
+        // Fallback or leave as warn
+      }
+
       setHealth({
         store: {
           status: isLoaded ? 'ok' : 'loading',
@@ -77,6 +100,10 @@ const SystemHealth = () => {
         supabase: {
           status: supabaseStatus,
           detail: supabaseDetail
+        },
+        moltbot: {
+          status: moltbotStatus,
+          detail: moltbotDetail
         },
         monaco: {
           status: 'ok',
@@ -108,6 +135,12 @@ const SystemHealth = () => {
           label="Supabase Cloud"
           status={health.supabase.status}
           detail={health.supabase.detail}
+        />
+        <HealthItem
+          icon={Cpu}
+          label="Moltbot Gateway"
+          status={health.moltbot.status}
+          detail={health.moltbot.detail}
         />
         <HealthItem
           icon={Key}

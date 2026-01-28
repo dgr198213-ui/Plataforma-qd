@@ -15,6 +15,7 @@ export class ClawdbotGateway {
 
     this.ws = null;
     this.isConnected = false;
+    this.isConnecting = false;
     this.reconnectAttempts = 0;
     this.sessionId = null;
     this.pendingTasks = new Map();
@@ -34,13 +35,34 @@ export class ClawdbotGateway {
    * Conectar al Gateway de Moltbot
    */
   async connect() {
+    if (this.isConnected || this.isConnecting) return;
+    this.isConnecting = true;
+
     return new Promise((resolve, reject) => {
       try {
+        if (this.ws) {
+          this.ws.onopen = null;
+          this.ws.onmessage = null;
+          this.ws.onerror = null;
+          this.ws.onclose = null;
+          this.ws.close();
+        }
+
         this.ws = new WebSocket(this.host);
 
+        const connectionTimeout = setTimeout(() => {
+          if (this.isConnecting) {
+            this.isConnecting = false;
+            this.ws.close();
+            reject(new Error('Connection timeout'));
+          }
+        }, 10000);
+
         this.ws.onopen = () => {
+          clearTimeout(connectionTimeout);
           console.log('🦞 [Moltbot] Connected to Gateway');
           this.isConnected = true;
+          this.isConnecting = false;
           this.reconnectAttempts = 0;
           this.sessionId = uuidv4();
 
@@ -64,20 +86,21 @@ export class ClawdbotGateway {
         };
 
         this.ws.onclose = () => {
+          if (this.isConnecting) {
+            clearTimeout(connectionTimeout);
+            this.isConnecting = false;
+            reject(new Error('Connection closed during handshake'));
+            return;
+          }
+
           console.log('🦞 [Moltbot] Connection closed');
           this.isConnected = false;
           this.emit('disconnected');
           this.attemptReconnect();
         };
 
-        // Timeout de conexión
-        setTimeout(() => {
-          if (!this.isConnected) {
-            reject(new Error('Connection timeout'));
-          }
-        }, 10000);
-
       } catch (error) {
+        this.isConnecting = false;
         reject(error);
       }
     });

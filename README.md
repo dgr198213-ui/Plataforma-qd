@@ -267,3 +267,30 @@ Todas las instrucciones enviadas a través del Gateway son evaluadas automática
 - `npm run moltbot:status`: Verifica el estado del servicio.
 - `npm run moltbot:logs`: Ver logs de ejecución en tiempo real.
 - `npm run moltbot:stop`: Detiene el Gateway.
+
+---
+
+## 🛠️ Solución de Problemas (Troubleshooting)
+
+### Moltbot Gateway
+- **Estado Offline**: Asegúrate de que el Gateway esté iniciado (`npm run moltbot:start`). Verifica que el puerto `18789` no esté ocupado.
+- **Error de Conexión**: Si Howard OS no se conecta, verifica que no tengas un firewall bloqueando WebSockets locales.
+- **Aprobaciones Pendientes**: Algunas tareas críticas requieren aprobación manual en el panel de Moltbot por seguridad (MUEDP).
+
+### Supabase & Persistencia
+- **Warning en System Health**: Verifica que las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` estén configuradas en tu `.env`.
+- **Error de Autenticación**: Howard OS funcionará en "Modo Local" si no hay conexión a Supabase, pero los datos no se sincronizarán en la nube.
+
+### Cifrado
+- **Llave no configurada**: Si ves un aviso de "Usando llave por defecto", configura `VITE_ENCRYPTION_KEY` para mayor seguridad. Puedes generar una usando `openssl rand -base64 32`.
+
+---
+
+## 📊 Monitoreo del Sistema
+
+Howard OS incluye un monitor de **Integridad del Sistema** que supervisa:
+- **Zustand Store**: Estado del motor de estado global.
+- **Supabase Cloud**: Conectividad y estado de la sesión.
+- **Moltbot Gateway**: Disponibilidad del orquestador IA.
+- **Cifrado AES**: Estado de la capa de seguridad de datos.
+- **Persistencia**: Salud del almacenamiento local.

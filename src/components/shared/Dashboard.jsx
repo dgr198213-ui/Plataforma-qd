@@ -108,8 +108,18 @@ const Dashboard = ({ onNavigate }) => {
       </div>
 
       <div className="px-4">
-        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Desarrollo & Herramientas</h3>
+        <h3 className="text-sm font-bold text-[#13ecc8] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <Code size={16} />
+          Desarrollo & Automatización
+        </h3>
         <div className="space-y-3">
+          <ModuleCard
+            icon={<Bot size={24} />}
+            title="Moltbot Gateway"
+            description="AI Task Automation & Orchestration"
+            color="purple"
+            onClick={() => onNavigate(MODULES.MOLTBOT)}
+          />
           <ModuleCard
             icon={<Key size={24} />}
             title="Credenciales"
@@ -145,18 +155,14 @@ const Dashboard = ({ onNavigate }) => {
             color="teal"
             onClick={() => onNavigate(MODULES.PROJECTS)}
           />
-          <ModuleCard
-            icon={<Bot size={24} />}
-            title="Moltbot Gateway"
-            description="AI Task Automation & Orchestration"
-            color="purple"
-            onClick={() => onNavigate(MODULES.MOLTBOT)}
-          />
         </div>
 
         <SystemHealth />
 
-        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 mt-6">Análisis & Auditoría</h3>
+        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 mt-6 flex items-center gap-2">
+          <Shield size={16} />
+          Análisis & Seguridad
+        </h3>
         <div className="space-y-3">
           <ModuleCard
             icon={<Shield size={24} />}
