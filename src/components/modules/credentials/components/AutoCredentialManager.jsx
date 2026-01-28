@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Key, Upload, Zap, Check, AlertCircle, ShieldCheck } from 'lucide-react';
-import { useCredentialsStore } from '../../../../store/credentialsStore';
+import { useCredentialsStore } from '@/store/credentialsStore';
 
 const AutoCredentialManager = () => {
   const { addCredential } = useCredentialsStore();
