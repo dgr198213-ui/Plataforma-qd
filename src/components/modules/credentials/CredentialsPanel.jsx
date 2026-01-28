@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Shield, Github, Zap, MessageSquare, Cloud, Database, Eye, EyeOff } from 'lucide-react';
-import { useCredentialsStore } from '../../../store/credentialsStore';
+import { useCredentialsStore } from '@/store/credentialsStore';
 import AutoCredentialManager from './components/AutoCredentialManager';
 
 const ICONS = {
