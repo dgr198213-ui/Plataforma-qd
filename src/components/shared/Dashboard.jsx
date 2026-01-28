@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap, LogOut } from 'lucide-react';
+import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap, LogOut, Bot } from 'lucide-react';
 import { MODULES } from '../../constants/modules';
 import SystemHealth from './SystemHealth';
 import { useAuthStore } from '../../store/authStore';
@@ -144,6 +144,13 @@ const Dashboard = ({ onNavigate }) => {
             description="Gestión completa de archivos"
             color="teal"
             onClick={() => onNavigate(MODULES.PROJECTS)}
+          />
+          <ModuleCard
+            icon={<Bot size={24} />}
+            title="Moltbot Gateway"
+            description="AI Task Automation & Orchestration"
+            color="purple"
+            onClick={() => onNavigate(MODULES.MOLTBOT)}
           />
         </div>
 

@@ -7,5 +7,6 @@ export const MODULES = {
   PROJECTS: 'projects',
   BIAS_FIREWALL: 'bias_firewall',
   HYPE_DETECTOR: 'hype_detector',
-  SOLVEIT: 'solveit'
+  SOLVEIT: 'solveit',
+  MOLTBOT: 'moltbot'
 };

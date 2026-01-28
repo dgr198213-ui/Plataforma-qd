@@ -14,7 +14,14 @@
     "setup": "node scripts/setup.cjs",
     "credentials": "node scripts/import-credentials.cjs",
     "dev:quick": "npm run setup && npm run dev",
-    "backup-creds": "cp config/credentials.json config/backups/credentials-$(date +%Y%m%d).json 2>/dev/null || echo 'No hay credenciales para respaldar'"
+    "backup-creds": "cp config/credentials.json config/backups/credentials-$(date +%Y%m%d).json 2>/dev/null || echo 'No hay credenciales para respaldar'",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "moltbot:start": "moltbot gateway start",
+    "moltbot:logs": "moltbot gateway logs --follow",
+    "moltbot:stop": "moltbot gateway stop",
+    "moltbot:status": "moltbot gateway status",
+    "dev:full": "concurrently \"npm run moltbot:start\" \"npm run dev\" --names \"moltbot,vite\" --prefix-colors \"magenta,cyan\""
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -26,6 +33,8 @@
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "uuid": "^13.0.0",
+    "ws": "^8.19.0",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
@@ -35,6 +44,7 @@
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
+    "concurrently": "^9.2.1",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
