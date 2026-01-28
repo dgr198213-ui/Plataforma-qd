@@ -49,6 +49,79 @@ La lógica central del proyecto es crear un **entorno de desarrollo unificado y 
 
 ---
 
+## 📂 Estructura Detallada del Proyecto y Funcionalidades
+
+La siguiente estructura muestra la organización del código, destacando las funciones principales de los archivos clave:
+
+```
+Plataforma-qd/
+├── config/
+│   └── default-credentials.json   # Credenciales de ejemplo para el setup inicial.
+├── public/
+│   ├── icons/                     # Iconos PWA.
+│   └── manifest.json              # Configuración de la Progressive Web App (PWA).
+├── scripts/
+│   ├── import-credentials.cjs     # Script para importar credenciales al sistema.
+│   └── setup.cjs                  # Script de configuración inicial del proyecto.
+├── src/
+│   ├── App.jsx                    # Componente principal. Define el enrutamiento de módulos (setCurrentModule).
+│   ├── main.jsx                   # Punto de entrada de React.
+│   ├── index.css                  # Estilos globales (Tailwind CSS).
+│   ├── constants/
+│   │   └── modules.js             # Definición de constantes de módulos (MODULES).
+│   ├── core/
+│   │   ├── components/
+│   │   │   ├── ErrorBoundary.jsx  # Manejo de errores de la aplicación.
+│   │   │   └── LoadingScreen.jsx  # Pantalla de carga.
+│   │   └── hooks/
+│   │       └── useDocumentTitle.js# Hook para actualizar el título del documento.
+│   ├── lib/
+│   │   └── supabase.js            # Cliente de Supabase.
+│   ├── services/
+│   │   ├── ClawdbotGateway.js     # Cliente WebSocket para Moltbot.
+│   │   │   └── Funciones clave: connect(), sendTask(), assessRisk(), handleApprovalRequest().
+│   │   └── SecureStorage.js       # Servicio de cifrado AES-256.
+│   │       └── Funciones clave: encrypt(), decrypt(), save(), load().
+│   ├── store/                     # Gestión de estado (Zustand).
+│   │   ├── authStore.js           # Estado de autenticación.
+│   │   │   └── Funciones clave: initialize(), signIn(), signOut().
+│   │   ├── codeStore.js           # Estado del IDE (archivos, terminal, Git).
+│   │   │   └── Funciones clave: updateFileContent(), saveFile(), commitChanges(), fetchProjects().
+│   │   └── credentialsStore.js    # Estado de credenciales.
+│   │       └── Funciones clave: loadCredentials(), updateCredential(), addCredential(), getCredentialValue().
+│   ├── utils/
+│   │   ├── logger.js              # Utilidad de logging.
+│   │   └── uuid.js                # Utilidad para generar/validar UUIDs.
+│   └── components/
+│       ├── shared/                # Componentes reutilizables.
+│       │   ├── Dashboard.jsx      # Vista principal y selector de módulos.
+│       │   ├── BottomNav.jsx      # Barra de navegación inferior.
+│       │   ├── Login.jsx          # Componente de login/registro.
+│       │   └── SystemHealth.jsx   # Monitoreo de la salud del sistema (Supabase, Cifrado, Store).
+│       └── modules/               # Módulos principales de la aplicación.
+│           ├── analysis/          # Módulos de análisis (Interfaces Mock).
+│           │   ├── BiasFirewall.jsx
+│           │   ├── HypeDetector.jsx
+│           │   └── SolveItIterator.jsx
+│           ├── credentials/
+│           │   └── CredentialsPanel.jsx # Interfaz para gestionar credenciales.
+│           ├── development/       # Módulos de desarrollo.
+│           │   ├── CodeEditor/    # IDE completo (Monaco Editor).
+│           │   ├── Connectors/    # Gestión de integraciones externas (GitHub, Supabase, Webhook).
+│           │   ├── NoCodeChat/    # Chat de generación de código con IA (Claude).
+│           │   │   └── Funciones clave: handleSend() - llama a la API de Anthropic con contexto del proyecto.
+│           │   ├── AITaskRunner.jsx # Ejecutor de tareas de IA predefinidas (usa Claude API).
+│           │   └── MoltbotPanel.jsx # Interfaz para Moltbot Gateway (muestra tareas y aprobaciones).
+│           └── projects/
+│               └── ProjectsManager.jsx # Gestión de proyectos y archivos.
+├── supabase/
+│   └── schema.sql                 # Esquema de la base de datos Supabase.
+├── package.json                   # Dependencias y scripts (dev:full, test, setup).
+└── README.md
+```
+
+---
+
 ## 🛠️ Arquitectura Técnica y Consistencia
 
 ### Estructura de Módulos
