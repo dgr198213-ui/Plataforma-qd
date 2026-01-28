@@ -152,6 +152,13 @@ const Dashboard = ({ onNavigate }) => {
             color="purple"
             onClick={() => onNavigate(MODULES.MOLTBOT)}
           />
+          <ModuleCard
+            icon={<Bot size={24} />}
+            title="AI Task Runner"
+            description="Automatización inteligente con Claude"
+            color="purple"
+            onClick={() => onNavigate(MODULES.AI_TASKS)}
+          />
         </div>
 
         <SystemHealth />
