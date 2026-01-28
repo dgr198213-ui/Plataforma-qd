@@ -9,6 +9,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClawdbotGateway } from '../services/ClawdbotGateway';
 
 // Mock WebSocket
+// eslint-disable-next-line no-undef
 global.WebSocket = class MockWebSocket {
   static CONNECTING = 0;
   static OPEN = 1;
@@ -126,7 +127,7 @@ describe('ClawdbotGateway', () => {
     });
 
     it('should send task with correct structure', async () => {
-      const taskPromise = gateway.sendTask({
+      gateway.sendTask({
         instruction: 'test task',
         context: { test: true }
       });

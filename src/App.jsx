@@ -21,6 +21,7 @@ const BiasFirewall = lazy(() => import('./components/modules/analysis/BiasFirewa
 const HypeDetector = lazy(() => import('./components/modules/analysis/HypeDetector'));
 const SolveItIterator = lazy(() => import('./components/modules/analysis/SolveItIterator'));
 const MoltbotPanel = lazy(() => import('./components/modules/development/MoltbotPanel'));
+const AITaskRunner = lazy(() => import('./components/modules/development/AITaskRunner'));
 
 const MODULE_CONFIG = {
   [MODULES.DASHBOARD]: {
@@ -73,6 +74,11 @@ const MODULE_CONFIG = {
     component: MoltbotPanel,
     showBottomNav: true,
     title: 'Moltbot Gateway'
+  },
+  [MODULES.AI_TASKS]: {
+    component: AITaskRunner,
+    showBottomNav: true,
+    title: 'AI Task Runner'
   }
 };
 

@@ -14,8 +14,7 @@ import {
   Clock,
   Activity,
   Loader2,
-  Shield,
-  Terminal
+  Shield
 } from 'lucide-react';
 import { ClawdbotGateway } from '../../../services/ClawdbotGateway';
 

@@ -136,6 +136,12 @@ export const useCredentialsStore = create((set, get) => ({
     }
   },
 
+  getCredentialValue: (id) => {
+    const cred = get().credentials.find(c => c.id === id);
+    if (!cred) return null;
+    return cred.value;
+  },
+
   clearAll: async () => {
     await supabase.from('credentials').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     set({ credentials: DEFAULT_CREDENTIALS });
