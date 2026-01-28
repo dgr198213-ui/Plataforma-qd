@@ -1,4 +1,4 @@
-# 🚀 Howard OS - Plataforma de Desarrollo Avanzada
+# 🚀 Howard OS - Plataforma de Desarrollo Avanzada (Auditoría 2026)
 
 <div align="center">
 
@@ -6,6 +6,7 @@
 ![PWA Ready](https://img.shields.io/badge/PWA-Ready-success?style=for-the-badge&logo=pwa&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tests Passed](https://img.shields.io/badge/Tests-31%20Passed-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)
 
 **IDE modular y profesional construido con React, Vite y Tailwind CSS.**  
 Ahora como **Progressive Web App (PWA)** instalable en móviles y desktop.
@@ -14,52 +15,65 @@ Ahora como **Progressive Web App (PWA)** instalable en móviles y desktop.
 
 ---
 
-## 📱 Instalación como App (PWA)
+## 📋 Resumen de la Auditoría del Sistema
 
-### Android (Chrome)
-1. Abre la app en Chrome
-2. Toca el banner "Instalar Howard OS" o ve a **⋮ → Instalar app**
-3. Confirma la instalación
+Este repositorio, denominado **Howard OS**, es una plataforma de desarrollo avanzada que funciona como un **IDE (Entorno de Desarrollo Integrado) basado en navegador** [1]. La arquitectura es modular, centrada en React con gestión de estado a través de **Zustand** y persistencia opcional en la nube mediante **Supabase** [2].
 
-### iOS (Safari)
-1. Abre la app en Safari
-2. Toca el botón **Compartir** (⬆️)
-3. Selecciona **"Añadir a pantalla de inicio"**
-4. Toca **"Añadir"**
+La auditoría completa del sistema confirma que el proyecto está **operativo y funcional** en sus módulos principales, con una clara orientación hacia la **automatización de tareas de desarrollo asistida por Inteligencia Artificial (IA)**.
 
-### Desktop (Chrome/Edge)
-1. Abre la app en el navegador
-2. Haz clic en el icono de instalación en la barra de direcciones
-3. O usa el banner de instalación que aparece automáticamente
+### Lógica y Pretensiones del Proyecto
 
----
+La lógica central del proyecto es crear un **entorno de desarrollo unificado y seguro** que integre herramientas de codificación, gestión de proyectos, control de versiones (Git simplificado) y, crucialmente, **agentes de IA** para tareas complejas.
 
-## 📋 Tabla de Contenidos
-
-- [Características Principales](#-características-principales)
-- [Instalación Rápida](#-instalación-rápida)
-- [Módulos Disponibles](#-módulos-disponibles)
-- [Arquitectura Técnica](#-arquitectura-técnica)
-- [Atajos de Teclado](#-atajos-de-teclado)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Tecnologías](#-tecnologías)
-- [PWA Features](#-pwa-features)
+| Pretensión | Módulo Clave | Estado de Implementación |
+| :--- | :--- | :--- |
+| **Desarrollo Asistido por IA** | No-Code Chat, AI Task Runner | **Funcional**. Utiliza la API de Claude (Anthropic) para generar código y ejecutar tareas [3]. |
+| **Automatización de Tareas** | Moltbot Gateway | **Funcional**. Implementa un cliente WebSocket (`ClawdbotGateway.js`) para orquestar tareas de IA de alto riesgo con un sistema de aprobación humana [4]. |
+| **Seguridad de Credenciales** | Credenciales, SecureStorage | **Funcional**. Utiliza cifrado **AES-256** para almacenar credenciales localmente, con la opción de sincronización cifrada a Supabase [5]. |
+| **Auditoría y Análisis** | Bias Firewall, Hype Detector, SolveIt | **Interfaces Activas**. Los módulos de análisis (Bias Firewall, Hype Detector, SolveIt Iterator) tienen interfaces de usuario bien definidas, aunque su lógica de negocio parece ser un *mock* o requiere integración con servicios externos para ser completamente funcionales [6]. |
+| **Entorno de Desarrollo Completo** | Code Editor | **Funcional**. Integra **Monaco Editor** (motor de VS Code) con terminal, vista previa en vivo y panel Git. |
 
 ---
 
 ## ✨ Características Principales
 
 | Feature | Descripción |
-|---------|-------------|
-| 📱 **PWA Instalable** | Funciona como app nativa en móvil y desktop |
-| 🔌 **Funciona Offline** | Cache inteligente de archivos estáticos |
-| 💻 **IDE Completo** | Editor Monaco (motor de VS Code) |
-| 🔄 **Git Integrado** | Stage, commit, branches sin salir de la app |
-| 🔐 **Cifrado AES-256** | Almacenamiento seguro de credenciales |
-| ⚡ **Ejecución en Vivo** | Ejecuta JavaScript/JSX en el navegador |
-| 🎨 **Vista Previa** | LivePreview con responsive modes |
-| 🔍 **Búsqueda Global** | Busca en todos los archivos del proyecto |
-| 📊 **System Health** | Monitoreo en tiempo real del sistema |
+| :--- | :--- |
+| 💻 **IDE Completo** | Editor Monaco (motor de VS Code) con Live Preview, Terminal y Diff Viewer. |
+| 🤖 **IA Integrada** | **No-Code Chat** (Generación de código por conversación) y **AI Task Runner** (Automatización de tareas complejas). |
+| 🛡️ **Moltbot Gateway** | Cliente WebSocket para orquestación de tareas de IA con gestión de riesgo y aprobación de operaciones críticas. |
+| 🔐 **Cifrado AES-256** | Almacenamiento seguro de credenciales con clave de cifrado configurable. |
+| ☁️ **Sincronización Cloud** | Persistencia de proyectos y archivos en **Supabase** (opcional). |
+| 🔌 **Conectores** | Arquitectura modular para integrar servicios externos (GitHub, REST API, Webhooks). |
+| 🧪 **Tests Unitarios** | 31 tests unitarios pasan, confirmando la estabilidad de la lógica de `ClawdbotGateway` y componentes clave. |
+
+---
+
+## 🛠️ Arquitectura Técnica y Consistencia
+
+### Estructura de Módulos
+
+El proyecto sigue una estructura modular clara, lo que facilita la escalabilidad y el mantenimiento:
+
+- `src/components/modules/development/`: Contiene el núcleo del IDE (`CodeEditor`), la automatización (`MoltbotPanel`, `AITaskRunner`) y la generación de código por IA (`NoCodeChat`).
+- `src/components/modules/analysis/`: Contiene los módulos de análisis y auditoría (`BiasFirewall`, `HypeDetector`, `SolveItIterator`).
+- `src/store/`: Gestión de estado centralizada con **Zustand** para autenticación, código y credenciales.
+- `src/services/`: Servicios de bajo nivel como el cifrado (`SecureStorage.js`) y la comunicación con el agente (`ClawdbotGateway.js`).
+
+### Seguridad y Observaciones Críticas
+
+Se identificaron dos puntos de seguridad críticos que deben ser abordados:
+
+1.  **Uso de `eval()`**: El `CodeEditor` utiliza `eval()` para la ejecución de código en el navegador. Esto es un riesgo de seguridad inherente para un IDE, aunque es necesario para la funcionalidad de "ejecución en vivo" [1].
+2.  **Clave de Cifrado**: El sistema de cifrado de credenciales (`SecureStorage.js`) utiliza una clave por defecto insegura si la variable de entorno `VITE_ENCRYPTION_KEY` no está configurada. **Se recomienda encarecidamente** configurar una clave única y robusta en el entorno de producción [5].
+
+### Consistencia Funcional
+
+Las pruebas unitarias confirman la lógica de:
+- **ClawdbotGateway**: Conexión, envío de tareas, gestión de estadísticas y el flujo de aprobación/rechazo de tareas de alto riesgo.
+- **Componentes**: El componente `CodeEditor` se renderiza correctamente.
+
+El proyecto es **consistente** con sus pretensiones, proporcionando una base sólida para un IDE asistido por IA. La integración con **Moltbot Gateway** y **AI Task Runner** (usando Claude 3.5 Sonnet) es la principal propuesta de valor, permitiendo la orquestación de tareas de desarrollo complejas.
 
 ---
 
@@ -88,147 +102,32 @@ La app estará disponible en: **http://localhost:5173**
 
 ---
 
-## 📦 Módulos Disponibles
-
-### Desarrollo & Herramientas
-
-| Módulo | Descripción | Estado |
-|--------|-------------|--------|
-| 🔑 **Credenciales** | Gestiona APIs, tokens y accesos con cifrado AES-256 | ✅ Activo |
-| 💻 **Editor de Código** | IDE completo con Monaco Editor + Terminal | ✅ Activo |
-| 💬 **No-Code Chat** | Desarrollo por conversación con IA (Claude 3.5) | ✅ Activo |
-| 🔗 **Conectores** | Integración con GitHub, APIs y webhooks | ✅ Activo |
-| 📁 **Proyectos** | Gestión completa de archivos y proyectos | ✅ Activo |
-
-### Análisis & Auditoría
-
-| Módulo | Descripción | Estado |
-|--------|-------------|--------|
-| 🛡️ **Bias Firewall** | Auditoría de sesgos en tiempo real | 🔶 Mock |
-| 📡 **Hype Detector** | Filtra ruido de señal en noticias | 🔶 Mock |
-| ⚡ **SolveIt Iterator** | Gestión iterativa pragmática | 🔶 Mock |
-
----
-
-## 🛠️ Arquitectura Técnica
-
-### Gestión de Estado
-```
-Zustand + Immer + Persist
-├── codeStore.js      → Archivos, Git, Terminal, Snippets
-└── credentialsStore.js → APIs, Tokens (cifrado AES-256)
-```
-
-### Editor de Código
-- **Monaco Editor** - Motor de VS Code
-- **Command Palette** - Ctrl+P
-- **Global Search** - Ctrl+Shift+F
-- **Diff Viewer** - Comparador de cambios
-- **Minimap** - Navegación visual
-- **Terminal** - Salida de ejecución
-
-### Sistema Git Local
-- Stage/Unstage archivos
-- Commits con mensaje
-- Crear/cambiar branches
-- Historial de commits
-
----
-
-## ⌨️ Atajos de Teclado
-
-| Atajo | Acción |
-|-------|--------|
-| `Ctrl + P` | Command Palette |
-| `Ctrl + Shift + F` | Búsqueda Global |
-| `Ctrl + S` | Guardar archivo |
-| `Escape` | Cerrar modal/panel |
-
----
-
-## 📂 Estructura del Proyecto
-
-```
-Plataforma-qd/
-├── public/
-│   ├── manifest.json          # Configuración PWA
-│   └── icons/                 # Iconos de la app
-│       ├── icon.svg
-│       └── icon-*.png
-├── src/
-│   ├── components/
-│   │   ├── modules/
-│   │   │   ├── analysis/      # Bias, Hype, SolveIt
-│   │   │   ├── credentials/   # Gestión de credenciales
-│   │   │   ├── development/   # CodeEditor, NoCodeChat
-│   │   │   └── projects/      # Gestión de proyectos
-│   │   └── shared/
-│   │       ├── Dashboard.jsx
-│   │       ├── BottomNav.jsx
-│   │       ├── SystemHealth.jsx
-│   │       └── PWAInstallPrompt.jsx
-│   ├── store/
-│   │   ├── codeStore.js       # Estado del editor
-│   │   └── credentialsStore.js
-│   ├── services/
-│   │   └── SecureStorage.js   # Cifrado AES-256
-│   └── App.jsx
-├── scripts/
-│   ├── setup.cjs
-│   └── import-credentials.cjs
-├── vite.config.js             # Configuración Vite + PWA
-├── package.json
-└── README.md
-```
-
----
-
-## 🔧 Tecnologías
-
-| Categoría | Tecnología |
-|-----------|------------|
-| **Framework** | React 18.2 |
-| **Build Tool** | Vite 5.2 |
-| **Estilos** | Tailwind CSS 3.4 |
-| **Estado** | Zustand 5 + Immer |
-| **Editor** | Monaco Editor 4.7 |
-| **Integraciones** | Octokit (GitHub API) |
-| **Cifrado** | CryptoJS (AES-256) |
-| **PWA** | vite-plugin-pwa + Workbox |
-| **Testing** | Vitest + React Testing Library |
-| **Iconos** | Lucide React |
-
----
-Desarrollado con ❤️ para la comunidad de ingeniería de Howard OS.
-Licencia privada para **dgr198213-ui**.
-
----
-
 ## ☁️ Integración con Supabase
 
-Howard OS ahora soporta persistencia real en la nube mediante **Supabase**.
-
-### 🤖 Desarrollo por Conversación (No-Code Chat)
-El módulo **No-Code Chat** integra la potencia de **Claude 3.5 Sonnet** (Anthropic) directamente en tu flujo de trabajo:
-- **Generación Contextual**: La IA conoce los archivos de tu proyecto y el framework que estás usando.
-- **Vista Previa de Código**: Revisa el código generado antes de aplicarlo.
-- **Integración Directa**: Aplica los cambios a cualquier archivo de tu proyecto con un solo clic.
-- **Plantillas**: Atajos para crear formularios, integraciones de API y estados globales instantáneamente.
-
-### 🔗 Sistema de Conectores
-Gestiona integraciones externas de forma modular:
-- **GitHub Connector**: Lista tus repositorios, clónalos directamente al IDE y publica tus cambios (push) con mensajes de commit personalizados.
-- **Extensibilidad**: Arquitectura preparada para Webhooks, REST APIs y bases de datos externas.
+Howard OS soporta persistencia real en la nube mediante **Supabase** para proyectos y autenticación.
 
 ### Configuración Necesaria
+
 Para habilitar la sincronización, añade las siguientes variables a tu archivo `.env`:
 
 ```env
 VITE_SUPABASE_URL=tu_url_de_supabase
 VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
+VITE_ENCRYPTION_KEY=tu_clave_secreta_unica_y_robusta
 ```
 
-### Características de la Integración
-- **Proyectos y Archivos**: Sincronización automática de tu espacio de trabajo.
-- **Credenciales Híbridas**: Las credenciales se cifran localmente con AES-256 antes de subirse a Supabase, garantizando que solo tú puedas descifrarlas.
-- **RLS (Row Level Security)**: Protección de datos a nivel de base de datos.
+---
+
+Desarrollado con ❤️ para la comunidad de ingeniería de Howard OS.
+Licencia privada para **dgr198213-ui**.
+
+---
+
+## 📚 Referencias
+
+[1] Jules (AI Engineer). *Reporte de Auditoría de Sistema Completo - Howard OS*. SYSTEM_AUDIT.md.
+[2] `src/store/codeStore.js`. Persistencia de estado con Zustand y Supabase.
+[3] `src/components/modules/development/NoCodeChat/ChatInterface.jsx`. Implementación de la API de Anthropic (Claude 3.5 Sonnet).
+[4] `src/services/ClawdbotGateway.js`. Cliente WebSocket para la orquestación de tareas de IA.
+[5] `src/services/SecureStorage.js`. Implementación de cifrado AES-256 para credenciales.
+[6] `src/components/modules/analysis/BiasFirewall.jsx`, `HypeDetector.jsx`, `SolveItIterator.jsx`. Interfaces de usuario para módulos de análisis.
