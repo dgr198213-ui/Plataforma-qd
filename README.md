@@ -58,6 +58,7 @@ Ahora como **Progressive Web App (PWA)** instalable en móviles y desktop.
 | 🔐 **Cifrado AES-256** | Almacenamiento seguro de credenciales |
 | ⚡ **Ejecución en Vivo** | Ejecuta JavaScript/JSX en el navegador |
 | 🎨 **Vista Previa** | LivePreview con responsive modes |
+| 🤖 **Moltbot Gateway** | Automatización de tareas con IA y ejecución remota |
 | 🔍 **Búsqueda Global** | Busca en todos los archivos del proyecto |
 | 📊 **System Health** | Monitoreo en tiempo real del sistema |
 
@@ -99,6 +100,7 @@ La app estará disponible en: **http://localhost:5173**
 | 💬 **No-Code Chat** | Desarrollo por conversación con IA (Claude 3.5) | ✅ Activo |
 | 🔗 **Conectores** | Integración con GitHub, APIs y webhooks | ✅ Activo |
 | 📁 **Proyectos** | Gestión completa de archivos y proyectos | ✅ Activo |
+| 🤖 **Moltbot Gateway** | AI Gateway para automatización y orquestación | ✅ Activo |
 
 ### Análisis & Auditoría
 
@@ -197,6 +199,7 @@ Plataforma-qd/
 | **PWA** | vite-plugin-pwa + Workbox |
 | **Testing** | Vitest + React Testing Library |
 | **Iconos** | Lucide React |
+| **Real-time** | WebSocket (ws) |
 
 ---
 Desarrollado con ❤️ para la comunidad de ingeniería de Howard OS.
@@ -232,3 +235,35 @@ VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
 - **Proyectos y Archivos**: Sincronización automática de tu espacio de trabajo.
 - **Credenciales Híbridas**: Las credenciales se cifran localmente con AES-256 antes de subirse a Supabase, garantizando que solo tú puedas descifrarlas.
 - **RLS (Row Level Security)**: Protección de datos a nivel de base de datos.
+
+---
+
+## 🦞 Moltbot Gateway Integration
+
+Howard OS ahora incluye una integración profunda con **Moltbot Gateway**, permitiendo la automatización de tareas complejas y la ejecución de comandos mediante IA.
+
+### 🚀 Cómo empezar
+
+1. **Asegúrate de tener Moltbot instalado:**
+   ```bash
+   npm install -g moltbot
+   ```
+
+2. **Inicia Howard OS con el Gateway activo:**
+   ```bash
+   npm run dev:full
+   ```
+   *Esto iniciará simultáneamente Howard OS y el Moltbot Gateway.*
+
+### 🛡️ Sistema de Gestión de Riesgos (MUEDP)
+Todas las instrucciones enviadas a través del Gateway son evaluadas automáticamente por un sistema de gobernanza:
+- **🟢 LOW**: Operaciones de lectura y búsqueda.
+- **🟡 MEDIUM**: Creación de archivos e instalación de dependencias.
+- **🟠 HIGH**: Operaciones Git y cambios de configuración (requiere aprobación).
+- **🔴 CRITICAL**: Eliminación de archivos y comandos sudo (requiere aprobación explícita).
+
+### ⌨️ Comandos Disponibles
+- `npm run moltbot:start`: Inicia solo el Gateway.
+- `npm run moltbot:status`: Verifica el estado del servicio.
+- `npm run moltbot:logs`: Ver logs de ejecución en tiempo real.
+- `npm run moltbot:stop`: Detiene el Gateway.
