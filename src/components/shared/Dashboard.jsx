@@ -159,6 +159,20 @@ const Dashboard = ({ onNavigate }) => {
             color="purple"
             onClick={() => onNavigate(MODULES.AI_TASKS)}
           />
+          <ModuleCard
+            icon={<Search size={24} />}
+            title="Context Memory"
+            description="Motor de memoria persistente inspirado en MiniMax"
+            color="teal"
+            onClick={() => onNavigate(MODULES.CONTEXT_MEMORY)}
+          />
+          <ModuleCard
+            icon={<Radar size={24} />}
+            title="Memory Visualizer"
+            description="Visualización del estado de memoria"
+            color="cyan"
+            onClick={() => onNavigate(MODULES.MEMORY_VISUALIZER)}
+          />
         </div>
 
         <SystemHealth />

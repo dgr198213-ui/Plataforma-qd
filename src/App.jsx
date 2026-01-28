@@ -22,6 +22,8 @@ const HypeDetector = lazy(() => import('./components/modules/analysis/HypeDetect
 const SolveItIterator = lazy(() => import('./components/modules/analysis/SolveItIterator'));
 const MoltbotPanel = lazy(() => import('./components/modules/development/MoltbotPanel'));
 const AITaskRunner = lazy(() => import('./components/modules/development/AITaskRunner'));
+const ContextMemoryPanel = lazy(() => import('./components/modules/development/ContextMemoryPanel'));
+const MemoryVisualizer = lazy(() => import('./components/modules/development/MemoryVisualizer'));
 
 const MODULE_CONFIG = {
   [MODULES.DASHBOARD]: {
@@ -79,6 +81,16 @@ const MODULE_CONFIG = {
     component: AITaskRunner,
     showBottomNav: true,
     title: 'AI Task Runner'
+  },
+  [MODULES.CONTEXT_MEMORY]: {
+    component: ContextMemoryPanel,
+    showBottomNav: true,
+    title: 'Context Memory'
+  },
+  [MODULES.MEMORY_VISUALIZER]: {
+    component: MemoryVisualizer,
+    showBottomNav: true,
+    title: 'Memory Visualizer'
   }
 };
 

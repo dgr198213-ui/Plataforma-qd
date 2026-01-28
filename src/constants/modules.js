@@ -9,5 +9,7 @@ export const MODULES = {
   HYPE_DETECTOR: 'hype_detector',
   SOLVEIT: 'solveit',
   MOLTBOT: 'moltbot',
-  AI_TASKS: 'ai_tasks'
+  AI_TASKS: 'ai_tasks',
+  CONTEXT_MEMORY: 'context-memory',
+  MEMORY_VISUALIZER: 'memory-visualizer'
 };
