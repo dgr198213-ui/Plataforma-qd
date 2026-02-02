@@ -27,6 +27,7 @@ Esta actualización marca la integración del **Context Memory Engine (CME)**, u
 | **Context Compression** | Reduce el tamaño del contexto en un 70% (simulando Multi-Head Latent Attention) manteniendo la información clave. | **Eficiencia**. Optimiza el uso de tokens y la velocidad de consulta a la IA. |
 | **Índice Semántico** | Crea un índice de búsqueda rápida (O(1)) basado en nombres de archivos, palabras clave e imports/exports. | **Precisión**. Permite a la IA recuperar archivos relevantes instantáneamente para consultas específicas. |
 | **Sincronización Incremental** | El CME se actualiza automáticamente cuando se guarda un archivo en el Code Editor. | **Tiempo Real**. La IA siempre trabaja con la versión más reciente del código. |
+| **Integración MCP** | Sincronización automática de soluciones validadas y cambios aprobados con NotebookLM. | **Base de Conocimiento**. El conocimiento del agente crece con cada interacción exitosa. |
 
 ---
 
@@ -66,7 +67,8 @@ Plataforma-qd/
 │   │   ├── ClawdbotGateway.js
 │   │   └── SecureStorage.js
 │   ├── hooks/
-│   │   └── useProjectMemory.js      # NUEVO: Hook para interactuar con el CME.
+│   │   ├── useProjectMemory.js      # NUEVO: Hook para interactuar con el CME.
+│   │   └── mcp-sync.ts              # NUEVO: Sincronización automática con NotebookLM (MCP).
 │   ├── store/                     # Gestión de estado (Zustand).
 │   │   ├── contextMemoryStore.js    # NUEVO: Store para el estado del CME.
 │   │   ├── authStore.js
