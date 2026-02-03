@@ -9,8 +9,8 @@ const ModuleCard = ({ icon, title, description, color, onClick }) => {
     emerald: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
     teal: 'text-[#13ecc8] bg-[#13ecc8]/10 border-[#13ecc8]/20',
     cyan: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
-    orange: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
-    purple: 'text-purple-500 bg-purple-500/10 border-purple-500/20'
+    orange: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
+    purple: 'text-purple-400 bg-purple-500/10 border-purple-500/20'
   };
 
   return (
@@ -56,7 +56,7 @@ const Dashboard = ({ onNavigate }) => {
           <div className="flex items-center gap-4">
             {user && (
               <div className="hidden md:flex flex-col items-end">
-                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Usuario</span>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Usuario</span>
                 <span className="text-xs text-white/80">{user.email}</span>
               </div>
             )}
@@ -83,7 +83,7 @@ const Dashboard = ({ onNavigate }) => {
           <input
             type="text"
             placeholder="Buscar herramientas, proyectos, comandos..."
-            className="w-full bg-[#192233] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#13ecc8]/50"
+            className="w-full bg-[#192233] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-[#13ecc8]/50"
           />
         </div>
       </div>

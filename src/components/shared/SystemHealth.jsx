@@ -15,7 +15,7 @@ const HealthItem = ({ icon: Icon, label, status, detail }) => (
           {status === 'ok' ? 'Online' : 'Warning'}
         </span>
       </div>
-      <p className="text-[10px] text-gray-500 truncate">{detail}</p>
+      <p className="text-[10px] text-gray-400 truncate">{detail}</p>
     </div>
   </div>
 );
