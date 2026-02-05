@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, MessageSquare, Send, Bot, User, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../../store/authStore';
+import { EditorBridge } from '../../../lib/editor-bridge';
 
 const NoCodeChat = ({ onBack }) => {
   const [messages, setMessages] = useState([]);
@@ -24,15 +25,18 @@ const NoCodeChat = ({ onBack }) => {
     setInput('');
     setLoading(true);
 
+    // Obtener contexto del editor si existe
+    const editorContext = EditorBridge.getInstance().getContext();
+
     try {
       const response = await fetch(AGENT_URL, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          // En un entorno real, pasaríamos el token de Supabase aquí
         },
         body: JSON.stringify({ 
           message: input, 
+          context: editorContext,
           sessionId: `platform-${user?.id || 'guest'}-${Date.now()}` 
         })
       });
@@ -40,6 +44,14 @@ const NoCodeChat = ({ onBack }) => {
       const data = await response.json();
       
       if (data.response) {
+        // Parsear respuesta del agente en busca de bloques de código
+        const codeMatch = data.response.match(/```(?:\w+)?\n([\s\S]+?)\n```/);
+        if (codeMatch) {
+          const code = codeMatch[1];
+          // Insertar el código en el editor
+          EditorBridge.getInstance().insertCode(code);
+        }
+
         setMessages(prev => [...prev, { 
           role: 'assistant', 
           content: data.response, 
