@@ -15,19 +15,26 @@ Ahora con **Context Memory Engine (CME)** para una IA más inteligente y context
 
 ---
 
+## 🔗 Ecosistema QodeIA
+**Howard OS** es el núcleo de desarrollo del ecosistema **QodeIA**, interconectado con:
+*   **[Mi-agente-QodeIA-](https://github.com/dgr198213-ui/Mi-agente-QodeIA-)**: El cerebro autónomo que potencia el *AI Task Runner* y el chat de la plataforma, permitiendo la automatización de tareas sobre el código base.
+*   **[Web-QodeIA-](https://github.com/dgr198213-ui/Web-QodeIA-)**: El portal central de la comunidad y administración, que provee la infraestructura de conocimiento y el panel MCP para el entrenamiento del sistema.
+
+---
+
 ## 🧠 Integración del Sistema Howard OS (Context Memory Engine)
 
-Esta actualización marca la integración del **Context Memory Engine (CME)**, un sistema de gestión de contexto de proyecto inspirado en la arquitectura **Lightning Attention** [1]. El CME proporciona una representación completa y optimizada del código base a los agentes de IA, eliminando la necesidad de RAG (Retrieval-Augmented Generation) y mejorando drásticamente la calidad y relevancia de las respuestas.
+Esta actualización marca la integración del **Context Memory Engine (CME)**, un sistema de gestión de contexto de proyecto inspirado en la arquitectura **Lightning Attention**. El CME proporciona una representación completa y optimizada del código base a los agentes de IA, eliminando la necesidad de RAG (Retrieval-Augmented Generation) y mejorando drásticamente la calidad y relevancia de las respuestas.
 
 ### Características Clave del Context Memory Engine (CME)
 
 | Característica | Descripción | Beneficio |
 | :--- | :--- | :--- |
-| **Atención Lineal (O(N))** | Simulación de la arquitectura Lightning Attention para procesar el contexto del proyecto en tiempo lineal. | **Velocidad y Escalabilidad**. Permite manejar proyectos de gran tamaño sin el cuello de botella de la atención cuadrática (O(N²)). |
-| **Context Compression** | Reduce el tamaño del contexto en un 70% (simulando Multi-Head Latent Attention) manteniendo la información clave. | **Eficiencia**. Optimiza el uso de tokens y la velocidad de consulta a la IA. |
-| **Índice Semántico** | Crea un índice de búsqueda rápida (O(1)) basado en nombres de archivos, palabras clave e imports/exports. | **Precisión**. Permite a la IA recuperar archivos relevantes instantáneamente para consultas específicas. |
+| **Atención Lineal (O(N))** | Simulación de la arquitectura Lightning Attention para procesar el contexto del proyecto en tiempo lineal. | **Velocidad y Escalabilidad**. Permite manejar proyectos de gran tamaño sin el cuello de botella de la atención cuadrática. |
+| **Context Compression** | Reduce el tamaño del contexto en un 70% manteniendo la información clave. | **Eficiencia**. Optimiza el uso de tokens y la velocidad de consulta a la IA. |
+| **Índice Semántico** | Crea un índice de búsqueda rápida (O(1)) basado en nombres de archivos e imports/exports. | **Precisión**. Recuperación instantánea de archivos relevantes para la IA. |
 | **Sincronización Incremental** | El CME se actualiza automáticamente cuando se guarda un archivo en el Code Editor. | **Tiempo Real**. La IA siempre trabaja con la versión más reciente del código. |
-| **Integración MCP** | Sincronización automática de soluciones validadas y cambios aprobados con NotebookLM. | **Base de Conocimiento**. El conocimiento del agente crece con cada interacción exitosa. |
+| **Integración MCP** | Sincronización automática de soluciones validadas con NotebookLM. | **Base de Conocimiento**. El conocimiento del sistema crece con cada interacción. |
 
 ---
 
@@ -36,62 +43,30 @@ Esta actualización marca la integración del **Context Memory Engine (CME)**, u
 | Feature | Descripción |
 | :--- | :--- |
 | 💻 **IDE Completo** | Editor Monaco (motor de VS Code) con Live Preview, Terminal y Diff Viewer. |
-| 🤖 **IA Contextual** | **No-Code Chat** y **AI Task Runner** ahora utilizan el **Context Memory Engine** para generar código y ejecutar tareas con conocimiento profundo del proyecto. |
-| 🧠 **Context Memory Engine** | Nuevo módulo para la gestión de contexto de proyecto (ver tabla superior). |
+| 🤖 **IA Contextual** | **No-Code Chat** y **AI Task Runner** utilizan el CME para generar código con conocimiento profundo del proyecto. |
+| 🧠 **Context Memory Engine** | Nuevo módulo para la gestión de contexto de proyecto de alto rendimiento. |
 | 📊 **Memory Visualizer** | Módulo de interfaz para monitorizar el estado de la memoria (tokens, archivos, proyectos activos). |
-| 🛡️ **Moltbot Gateway** | Cliente WebSocket para orquestación de tareas de IA con gestión de riesgo y aprobación de operaciones críticas. |
+| 🛡️ **Moltbot Gateway** | Orquestación de tareas de IA con gestión de riesgo y aprobación de operaciones críticas. |
 | 🔐 **Cifrado AES-256** | Almacenamiento seguro de credenciales con clave de cifrado configurable. |
-| ☁️ **Sincronización Cloud** | Persistencia de proyectos y archivos en **Supabase** (opcional). |
+| ☁️ **Sincronización Cloud** | Persistencia de proyectos y archivos en **Supabase**. |
 
 ---
 
-## 📂 Estructura Detallada del Proyecto y Funcionalidades (Actualizada)
-
-La siguiente estructura muestra la organización del código, destacando las nuevas funciones del CME:
+## 📂 Estructura Detallada del Proyecto (Actualizada)
 
 ```
 Plataforma-qd/
-├── config/
-├── public/
-├── scripts/
 ├── src/
-│   ├── App.jsx
-│   ├── main.jsx
-│   ├── index.css
-│   ├── constants/
-│   │   └── modules.js             # ACTUALIZADO: Incluye Context Memory Panel y Memory Visualizer.
-│   ├── core/
-│   ├── lib/
 │   ├── services/
-│   │   ├── ContextMemoryEngine.js   # NUEVO: Motor principal de atención contextual.
-│   │   ├── ClawdbotGateway.js
-│   │   └── SecureStorage.js
+│   │   ├── ContextMemoryEngine.js   # Motor principal de atención contextual.
+│   │   └── ClawdbotGateway.js       # Conexión con el agente QodeIA.
 │   ├── hooks/
-│   │   ├── useProjectMemory.js      # NUEVO: Hook para interactuar con el CME.
-│   │   └── mcp-sync.ts              # NUEVO: Sincronización automática con NotebookLM (MCP).
-│   ├── store/                     # Gestión de estado (Zustand).
-│   │   ├── contextMemoryStore.js    # NUEVO: Store para el estado del CME.
-│   │   ├── authStore.js
-│   │   ├── codeStore.js
-│   │   └── credentialsStore.js
-│   ├── utils/
-│   ├── components/
-│   │   ├── shared/
-│   │   └── modules/
-│   │       ├── analysis/
-│   │       ├── credentials/
-│   │       ├── development/       # Módulos de desarrollo.
-│   │       │   ├── CodeEditor/    # Code Editor (Ahora sincroniza cambios con CME).
-│   │       │   ├── Connectors/
-│   │       │   ├── NoCodeChat/    # Chat de IA (Ahora usa CME para contexto).
-│   │       │   ├── AITaskRunner.jsx # Ejecutor de tareas (Ahora usa CME para contexto).
-│   │       │   ├── ContextMemoryPanel.jsx # NUEVO: Interfaz de consulta al CME.
-│   │       │   ├── MemoryVisualizer.jsx   # NUEVO: Interfaz de visualización de memoria.
-│   │       │   └── MoltbotPanel.jsx
-│   │       └── projects/
-├── supabase/
-├── package.json                   # Dependencias actualizadas.
-└── README.md
+│   │   ├── useProjectMemory.js      # Hook para interactuar con el CME.
+│   │   └── mcp-sync.ts              # Sincronización con la base de conocimiento.
+│   ├── components/modules/development/
+│   │   ├── CodeEditor/              # Sincroniza cambios con CME.
+│   │   ├── NoCodeChat/              # Chat que consume el contexto del CME.
+│   │   └── AITaskRunner.jsx         # Ejecutor de tareas potenciado por el Agente QodeIA.
 ```
 
 ---
@@ -104,17 +79,10 @@ git clone https://github.com/dgr198213-ui/Plataforma-qd.git
 cd Plataforma-qd
 
 # Instalar dependencias
-pnpm install # Se recomienda pnpm para una instalación más rápida y eficiente
+pnpm install
 
 # Configuración automática + iniciar
 npm run dev:quick
-```
-
-O paso a paso:
-
-```bash
-npm run setup    # Genera .env y estructura
-npm run dev      # Inicia servidor de desarrollo
 ```
 
 La app estará disponible en: **http://localhost:5173**
@@ -124,6 +92,9 @@ La app estará disponible en: **http://localhost:5173**
 ## 📚 Referencias
 
 [1] Howard OS Team. *Context Memory Engine - Arquitectura de Atención Lineal*. Internal Documentation.
-[2] Jules (AI Engineer). *Reporte de Auditoría de Sistema Completo - Howard OS*. SYSTEM_AUDIT.md.
-[3] `src/components/modules/development/NoCodeChat/ChatInterface.jsx`. Implementación de la API de Anthropic (Claude 3.5 Sonnet).
-[4] `src/services/SecureStorage.js`. Implementación de cifrado AES-256 para credenciales.
+[2] Jules (AI Engineer). *Reporte de Auditoría de Sistema Completo*. SYSTEM_AUDIT.md.
+[3] `src/services/ClawdbotGateway.js`. Orquestación con el Agente Autónomo QodeIA.
+
+---
+
+**Creado con 💛 para la comunidad QodeIA**
