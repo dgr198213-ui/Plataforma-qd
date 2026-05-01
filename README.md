@@ -1,11 +1,14 @@
-# 🚀 Howard OS - Plataforma de Desarrollo Avanzada (v2.0 - Contextual)
+# Howard OS - Plataforma de Desarrollo Avanzada (v2.0 - Contextual)
+
+[![CI](https://github.com/dgr198213-ui/Plataforma-qd/actions/workflows/ci.yml/badge.svg)](https://github.com/dgr198213-ui/Plataforma-qd/actions)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2-61DAFB.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.2-646CFF.svg)](https://vitejs.dev/)
 
 <div align="center">
 
 ![Howard OS](https://img.shields.io/badge/Howard%20OS-v2.0.0-13ecc8?style=for-the-badge&logo=react&logoColor=white)
 ![PWA Ready](https://img.shields.io/badge/PWA-Ready-success?style=for-the-badge&logo=pwa&logoColor=white)
-![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-5.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Tests Passed](https://img.shields.io/badge/Tests-31%20Passed-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)
 
 **IDE modular y profesional construido con React, Vite y Tailwind CSS.**  
