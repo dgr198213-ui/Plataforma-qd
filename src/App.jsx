@@ -24,6 +24,7 @@ const MoltbotPanel = lazy(() => import('./components/modules/development/Moltbot
 const AITaskRunner = lazy(() => import('./components/modules/development/AITaskRunner'));
 const ContextMemoryPanel = lazy(() => import('./components/modules/development/ContextMemoryPanel'));
 const MemoryVisualizer = lazy(() => import('./components/modules/development/MemoryVisualizer'));
+const CommunityPanel = lazy(() => import('./components/modules/community/CommunityPanel'));
 
 const MODULE_CONFIG = {
   [MODULES.DASHBOARD]: {
@@ -91,6 +92,16 @@ const MODULE_CONFIG = {
     component: MemoryVisualizer,
     showBottomNav: true,
     title: 'Memory Visualizer'
+  },
+  [MODULES.COMMUNITY]: {
+    component: CommunityPanel,
+    showBottomNav: true,
+    title: 'Comunidad'
+  },
+  [MODULES.RESOURCES]: {
+    component: CommunityPanel,
+    showBottomNav: true,
+    title: 'Recursos'
   }
 };
 

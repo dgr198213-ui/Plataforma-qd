@@ -11,5 +11,7 @@ export const MODULES = {
   MOLTBOT: 'moltbot',
   AI_TASKS: 'ai_tasks',
   CONTEXT_MEMORY: 'context-memory',
-  MEMORY_VISUALIZER: 'memory-visualizer'
+  MEMORY_VISUALIZER: 'memory-visualizer',
+  COMMUNITY: 'community',
+  RESOURCES: 'resources'
 };

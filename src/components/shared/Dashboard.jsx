@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap, LogOut, Bot } from 'lucide-react';
+import { Shield, Folder, Search, Key, Code, MessageSquare, Link2, Radar, Zap, LogOut, Bot, Users, BookOpen } from 'lucide-react';
 import { MODULES } from '../../constants/modules';
 import SystemHealth from './SystemHealth';
 import { useAuthStore } from '../../store/authStore';
@@ -199,6 +199,24 @@ const Dashboard = ({ onNavigate }) => {
             description="Gestión iterativa pragmática"
             color="orange"
             onClick={() => onNavigate(MODULES.SOLVEIT)}
+          />
+        </div>
+
+        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 mt-6">Comunidad & Recursos</h3>
+        <div className="space-y-3">
+          <ModuleCard
+            icon={<Users size={24} />}
+            title="Comunidad"
+            description="Conecta con otros builders hispanohablantes"
+            color="teal"
+            onClick={() => onNavigate(MODULES.COMMUNITY)}
+          />
+          <ModuleCard
+            icon={<BookOpen size={24} />}
+            title="Recursos"
+            description="Guías, tutoriales y snippets compartidos"
+            color="cyan"
+            onClick={() => onNavigate(MODULES.RESOURCES)}
           />
         </div>
       </div>
