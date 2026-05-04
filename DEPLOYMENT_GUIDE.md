@@ -22,7 +22,7 @@ Asegúrate de tener configuradas las siguientes variables en tu proyecto de Verc
 | `VITE_SUPABASE_URL` | La URL de tu proyecto Supabase. |
 | `VITE_SUPABASE_ANON_KEY` | La clave Anon pública de Supabase. |
 | `VITE_ENCRYPTION_KEY` | Una clave secreta para cifrar tus credenciales localmente (mínimo 32 caracteres recomendados). |
-| `VITE_QODEIA_API_KEY` | API Key para integraciones de QodeIA Agent y servicios externos. |
+| `QODEIA_API_KEY` | **Solo backend**: API key privada para integraciones externas. No usar prefijo `VITE_` para evitar exposición en el cliente. |
 
 ## 3. Despliegue en Vercel
 
