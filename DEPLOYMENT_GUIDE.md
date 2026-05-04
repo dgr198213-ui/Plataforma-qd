@@ -1,4 +1,4 @@
-# Guía de Despliegue y Configuración - Howard OS (Plataforma-qd)
+# Guía de Despliegue y Configuración - QodeIA Howard (plataforma-qd)
 
 He realizado mejoras en la estructura del proyecto para asegurar una conexión estable entre el repositorio, Vercel y Supabase. Sigue estos pasos para completar la configuración:
 
@@ -22,6 +22,7 @@ Asegúrate de tener configuradas las siguientes variables en tu proyecto de Verc
 | `VITE_SUPABASE_URL` | La URL de tu proyecto Supabase. |
 | `VITE_SUPABASE_ANON_KEY` | La clave Anon pública de Supabase. |
 | `VITE_ENCRYPTION_KEY` | Una clave secreta para cifrar tus credenciales localmente (mínimo 32 caracteres recomendados). |
+| `VITE_QODEIA_API_KEY` | API Key para integraciones de QodeIA Agent y servicios externos. |
 
 ## 3. Despliegue en Vercel
 
