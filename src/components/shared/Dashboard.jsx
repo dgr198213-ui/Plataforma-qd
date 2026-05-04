@@ -49,7 +49,7 @@ const Dashboard = ({ onNavigate }) => {
               <Shield className="text-[#13ecc8]" size={24} />
             </div>
             <div>
-              <div className="text-xs text-[#13ecc8] font-bold">HOWARD OS</div>
+              <div className="text-xs text-[#13ecc8] font-bold">QODEIA HOWARD</div>
               <div className="text-sm text-white/60">{currentTime.toLocaleTimeString()}</div>
             </div>
           </div>
@@ -218,6 +218,17 @@ const Dashboard = ({ onNavigate }) => {
             color="cyan"
             onClick={() => onNavigate(MODULES.RESOURCES)}
           />
+        </div>
+      </div>
+
+      <div className="px-4 mt-6">
+        <div className="bg-[#192233] rounded-xl p-4 border border-white/5">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Ecosistema QodeIA</h3>
+          <div className="flex flex-col md:flex-row gap-2 text-sm">
+            <a className="text-[#13ecc8] hover:underline" href="https://mi-agente-qode-ia.vercel.app" target="_blank" rel="noreferrer">QodeIA Agent</a>
+            <a className="text-[#13ecc8] hover:underline" href="https://web-qodeia.vercel.app" target="_blank" rel="noreferrer">QodeIA Community</a>
+            <a className="text-[#13ecc8] hover:underline" href="https://plataforma-qd.vercel.app" target="_blank" rel="noreferrer">QodeIA Howard</a>
+          </div>
         </div>
       </div>
     </div>
