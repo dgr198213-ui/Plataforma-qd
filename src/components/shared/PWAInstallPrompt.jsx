@@ -12,11 +12,6 @@ const PWAInstallPrompt = () => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
       || window.navigator.standalone === true;
 
-    if (isStandalone) {
-      setIsInstalled(true);
-      return;
-    }
-
     // Detectar iOS
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     setIsIOS(isIOSDevice);
@@ -31,7 +26,7 @@ const PWAInstallPrompt = () => {
     }
 
     // Para iOS, mostrar instrucciones después de un delay
-    if (isIOSDevice) {
+    if (isIOSDevice && !isStandalone) {
       const timer = setTimeout(() => setShowPrompt(true), 3000);
       return () => clearTimeout(timer);
     }
@@ -40,21 +35,30 @@ const PWAInstallPrompt = () => {
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowPrompt(true);
+      if (!isStandalone) {
+        setShowPrompt(true);
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handler);
 
     // Detectar si se instaló
-    window.addEventListener('appinstalled', () => {
+    const installedHandler = () => {
       setIsInstalled(true);
       setShowPrompt(false);
-    });
+    };
+
+    window.addEventListener('appinstalled', installedHandler);
+
+    if (isStandalone) {
+      setIsInstalled(true);
+    }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('appinstalled', installedHandler);
     };
-  }, []);
+  }, [isInstalled]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;

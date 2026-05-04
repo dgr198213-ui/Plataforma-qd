@@ -4,9 +4,8 @@
  * ACTUALIZADO: Sincronización automática con agente al cargar proyecto
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import agentApiClient from '@/services/AgentApiClient';
-import contextMemoryEngine from '@/services/ContextMemoryEngine';
 import { logger } from '@/utils/logger';
 
 const TASK_TEMPLATES = [
@@ -67,12 +66,7 @@ export default function AITaskRunner({ projectId, projectFiles, onClose }) {
   const [running, setRunning] = useState(false);
   const [syncStatus, setSyncStatus] = useState('idle'); // idle | syncing | synced | error
 
-  // Sincronizar proyecto al montar el componente
-  useEffect(() => {
-    syncProjectToAgent();
-  }, [projectId, projectFiles]);
-
-  const syncProjectToAgent = async () => {
+  const syncProjectToAgent = useCallback(async () => {
     if (!projectFiles || projectFiles.length === 0) {
       logger.warn('[AITaskRunner] No hay archivos para sincronizar');
       return;
@@ -98,7 +92,12 @@ export default function AITaskRunner({ projectId, projectFiles, onClose }) {
       logger.error('[AITaskRunner] Error sincronizando:', error);
       setSyncStatus('error');
     }
-  };
+  }, [projectId, projectFiles]);
+
+  // Sincronizar proyecto al montar el componente
+  useEffect(() => {
+    syncProjectToAgent();
+  }, [syncProjectToAgent]);
 
   const executeTask = async (taskTemplate, customDescription) => {
     setRunning(true);

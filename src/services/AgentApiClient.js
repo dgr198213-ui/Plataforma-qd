@@ -275,8 +275,9 @@ class AgentApiClient {
                 try {
                   const parsed = JSON.parse(data);
                   yield parsed;
-                } catch (e) {
+                } catch (error) {
                   // Línea no es JSON, enviar como texto
+                  logger.debug('SSE line is not JSON:', data, error);
                   yield { type: 'text', content: data };
                 }
               }

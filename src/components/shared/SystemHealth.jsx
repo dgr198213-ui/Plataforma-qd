@@ -42,7 +42,8 @@ const SystemHealth = () => {
         localStorage.setItem('health-check', 'test');
         localStorage.removeItem('health-check');
         storageOk = true;
-      } catch (e) {
+      } catch (error) {
+        console.error('Storage health check failed:', error);
         storageOk = false;
       }
 
@@ -56,7 +57,8 @@ const SystemHealth = () => {
           supabaseStatus = 'ok';
           supabaseDetail = session ? `Conectado como ${session.user.email}` : 'Conectado (Sesión Invitado)';
         }
-      } catch (e) {
+      } catch (error) {
+        console.error('Supabase health check failed:', error);
         supabaseStatus = 'error';
         supabaseDetail = 'Error de conexión';
       }

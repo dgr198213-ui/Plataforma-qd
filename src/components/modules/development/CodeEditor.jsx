@@ -7,7 +7,7 @@ import { useCodeStore } from '../../../store/codeStore';
 const CodeEditor = ({ onBack }) => {
   const { currentProject } = useCodeStore();
   const [language, setLanguage] = useState('javascript');
-  const [theme, setTheme] = useState('vs-dark');
+  const theme = 'vs-dark';
 
   function handleEditorDidMount(editor, monaco) {
     EditorBridge.getInstance().setEditor(editor, monaco);

@@ -4,7 +4,7 @@
  * ACTUALIZADO: Usar AgentApiClient con contexto CME
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import agentApiClient from '@/services/AgentApiClient';
 import { logger } from '@/utils/logger';
 
@@ -140,7 +140,7 @@ export default function NoCodeChat({ projectId, onClose }) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-center text-gray-500 mt-8">
-            <p className="text-xl mb-2">👋 Hi! I'm your AI assistant</p>
+            <p className="text-xl mb-2">👋 Hi! I&apos;m your AI assistant</p>
             <p className="text-sm">
               I have full context of your project. Ask me anything!
             </p>

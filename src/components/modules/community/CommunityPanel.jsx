@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Users, Heart, MessageSquare, Code2, BookOpen, Share2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Users, Heart, MessageSquare, BookOpen, Share2 } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 
 const CommunityPanel = ({ onBack }) => {
@@ -8,11 +8,7 @@ const CommunityPanel = ({ onBack }) => {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadCommunityData();
-  }, [activeTab]);
-
-  const loadCommunityData = async () => {
+  const loadCommunityData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -37,7 +33,11 @@ const CommunityPanel = ({ onBack }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    loadCommunityData();
+  }, [loadCommunityData]);
 
   return (
     <div className="min-h-screen bg-[#10221f] text-white pb-24">

@@ -165,7 +165,8 @@ class ContextMemoryEngine {
         if (pkg.devDependencies) {
           context += `### Development\n\`\`\`json\n${JSON.stringify(pkg.devDependencies, null, 2)}\n\`\`\`\n`;
         }
-      } catch (e) {
+      } catch (error) {
+        logger.error('Error parsing package.json:', error);
         context += 'Error parsing package.json\n';
       }
       context += '\n';
